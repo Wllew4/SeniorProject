@@ -1,8 +1,7 @@
 #pragma once
+#include <string>
 
-class Log {
-    public:
-    static void Error(const char* msg);
-    static void Print(const char* msg);
-    static void AddOn(const char* msg);
-};
+namespace Log {
+    void Error(int size, ...);
+    void Print(int size, ...);
+}

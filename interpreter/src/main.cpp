@@ -1,6 +1,15 @@
 /*      Janelle Interpreter
  *      Created by William Janelle
  *      Bedford High School Senior Project
+ * 
+ *      TO-DO:
+ *          - Parsing
+ *          - Printing
+ *          - Variables (weakly typed or strings/numbers)
+ *          - Conditionals
+ *          - Recursion
+ *          - Math
+ *          - Rendering
  */
 
 const char* version_string = "0.1.0";
@@ -8,63 +17,78 @@ const char* version_string = "0.1.0";
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 
 #include "util/Log.h"
+#include "Lexer.h"
+#include "Parser.h"
+#include "config.h"
 
-struct {
-    bool printfile = false;
-} options;
+bool options[2] = {0,0};
 
-const char* readFile(char* file){
-    FILE* f = fopen(file, "r");
+char* readFile(char* file){
+    FILE* f = fopen(file, "rb");
 
     if(f){
         fseek(f, 0, SEEK_END);
         int bufsize = ftell(f);
         fseek(f, 0, SEEK_SET);
 
-        char* buffer = (char*)malloc(sizeof(char) * (bufsize + 1));
+        char* buffer = new char[bufsize + 1];
         buffer[bufsize] = '\0';
 
         int readsize = fread(buffer, sizeof(char), bufsize, f);
         if(bufsize != readsize){
             free(buffer);
-            printf("Could not allocate memory for file " + *file);
+            Log::Error(3,"Could not allocate memory for file ", file, "\n");
             exit(1);
         }
         fclose(f);
-        if(options.printfile){
-            Log::Print("DEBUG Print source file: ");
-            Log::AddOn(file);
-            Log::AddOn("\n");
-            printf(buffer);
-            
+        if(options[0]){
+            Log::Print(5,"DEBUG Print source file: ", file, "\n", buffer, "\n\n");
         }
 
         return buffer;
     } else {
-        printf("Could not find file %s", file);
+        Log::Error(3,"Could not find file ", file, "\n");
         exit(1);
     }
 }
 
 int main(int argc, char** argv){
-    if(argc == 1){ Log::Error("No file name or arguments provided"); exit(1); }
+    if(argc == 1){ Log::Error(1,"No file name or arguments provided"); exit(1); }
     char** fileArg;
     for(int i = 1; i < argc; i++){
         if(argv[i][0] == '-'){
             if(strcmp(argv[i], "--verify") == 0){
-                Log::Print("Janelle Intepreter version ");
-                Log::AddOn(version_string);
-                Log::AddOn("\n");
+                Log::Print(3,"Janelle Intepreter version ", version_string, "\n");
             }
-            if(strcmp(argv[i], "--debug-printfile") == 0){  //  <-- Doing weird stuff when file has line breaks
-                options.printfile = true;
+            if(strcmp(argv[i], "--debug-printfile") == 0){
+                options[0] = true;
+            }
+            if(strcmp(argv[i], "--debug-printtokens") == 0){
+                
+                options[1] = true;
             }
         }
         else {
             fileArg = &argv[i];
         }
     }
-    readFile(*fileArg);
+
+    int enabledDebuggerC = 0;
+    for(bool i : options){
+        if(i) enabledDebuggerC++;
+    }
+    if(enabledDebuggerC > 0){
+        Log::Print(3, "version ", version_string, "\n");
+        Log::Print(5, "Running Debugger",
+            enabledDebuggerC > 1 ? "s:" : ":",
+            options[0] ? " Print Source" : "",
+            options[1] ? " Print Tokens" : "",
+            "\n\n");
+    }
+
+    Lexer::Init(readFile(*fileArg));
+    Parser::parse();
 }
