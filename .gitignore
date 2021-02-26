@@ -1,5 +1,7 @@
 .replit
 
+.vscode
+
 *.exe
 *.out
 

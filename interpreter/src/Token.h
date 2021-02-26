@@ -1,6 +1,6 @@
 #pragma once
 
-enum Type {
+enum TokenType {
     T_VAR,
     T_STRING,
     T_NUM,
@@ -10,6 +10,6 @@ enum Type {
 };
 
 struct Token {
-    Type type;
+    TokenType type;
     const char* value;
 };

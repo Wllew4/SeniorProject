@@ -3,8 +3,6 @@
  *      Bedford High School Senior Project
  * 
  *      TO-DO:
- *          - Parsing
- *          - Printing
  *          - Variables (weakly typed or strings/numbers)
  *          - Conditionals
  *          - Recursion

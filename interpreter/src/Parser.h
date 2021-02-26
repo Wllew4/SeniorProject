@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Token.h"
+#include "Node.h"
 
 namespace Parser {
     namespace {
@@ -13,4 +14,6 @@ namespace Parser {
     void printToken();
 
     void parse();
+
+    void parseCurrentToken();
 }

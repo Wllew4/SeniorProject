@@ -17,7 +17,30 @@ void Parser::printToken(){
 }
 
 void Parser::parse(){
-    while(m_next.type != Type::T_EOF){
+    while(m_next.type != TokenType::T_EOF){
+        parseCurrentToken();
         parseNext();
+    }
+    exit(0);
+}
+
+void Parser::parseCurrentToken(){
+    switch (m_current.type){
+        case TokenType::T_PRINTLN:
+            if(m_next.type == TokenType::T_STRING || m_next.type == TokenType::T_NUM){
+                printf("%s\n", m_next.value);
+            }
+            else {
+                Log::UnexpectedToken(Lexer::m_line, m_next.value);
+            }
+            break;
+        case TokenType::T_PRINT:
+            if(m_next.type == TokenType::T_STRING || m_next.type == TokenType::T_NUM){
+                printf("%s", m_next.value);
+            }
+            else {
+                Log::UnexpectedToken(Lexer::m_line, m_next.value);
+            }
+            break;
     }
 }

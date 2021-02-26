@@ -21,3 +21,10 @@ void Log::Print(int size, ...){
     }
     va_end(args);
 }
+
+void Log::UnexpectedToken(int line, const char* value){
+    char* linebuf = new char[5];
+    itoa(line, linebuf, 10);
+    Log::Error(4, "Unexpected token on line ", linebuf, ": ", value);
+    delete linebuf;
+}

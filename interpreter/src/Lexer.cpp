@@ -17,15 +17,18 @@ Token Lexer::getNextToken(){
             case '\t':
                 m_position++;
                 break;
+            case '\n':
+                m_line++;
+                break;
             case '/':
                 if(*m_position + 1 == '/') while(*m_position != '\n') m_position++;
                 break;
             
             case '\0':
-                return { Type::T_EOF, "End of file" };
+                return { TokenType::T_EOF, "End of file" };
             case '\"':
                 {
-                char* start = m_position;
+                char* start = m_position + 1;
                 int length = 0;
                 m_position++;
                 while(*m_position != '\"'){
@@ -36,7 +39,7 @@ Token Lexer::getNextToken(){
                 memcpy(value, start, length);
                 value[length] = '\0';
                 m_position++;
-                return { Type::T_STRING, start };
+                return { TokenType::T_STRING, value };
                 }
             
             default:
@@ -52,7 +55,10 @@ Token Lexer::getNextToken(){
                     memcpy(value, start, length);
                     value[length] = '\0';
                     if(strcmp(value, "println") == 0){
-                        return { Type::T_PRINTLN, value };
+                        return { TokenType::T_PRINTLN, value };
+                    }
+                    if(strcmp(value, "print") == 0){
+                        return { TokenType::T_PRINT, value };
                     }
                 }
         }
