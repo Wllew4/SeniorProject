@@ -12,7 +12,7 @@ void Parser::parseNext(){
 }
 
 void Parser::printToken(){
-    static const char* tokentypes[] = {"Var", "String", "Number", "Print", "Printline", "EOF"};
+    static const char* tokentypes[] = {"Var", "String", "Number", "Print", "Printline", "Semicolon", "EOF"};
     Log::Print(6,"TOKEN:\t", "Type: ", tokentypes[m_next.type], "\t\t", m_next.value, "\n");
 }
 
@@ -22,6 +22,13 @@ void Parser::parse(){
         parseNext();
     }
     exit(0);
+}
+
+void Parser::parseExpression(){
+    while(m_next.type != TokenType::T_SEMICOLON){
+        // parseCurrentToken();
+        parseNext();
+    }
 }
 
 void Parser::parseCurrentToken(){

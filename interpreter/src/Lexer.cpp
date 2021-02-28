@@ -18,8 +18,12 @@ Token Lexer::getNextToken(){
                 m_position++;
                 break;
             case '\n':
+                m_position++;
                 m_line++;
                 break;
+            case ';':
+                m_position++;
+                return { TokenType::T_SEMICOLON, ";" };
             case '/':
                 if(*m_position + 1 == '/') while(*m_position != '\n') m_position++;
                 break;
@@ -46,18 +50,22 @@ Token Lexer::getNextToken(){
 
                 if(isalpha(*m_position)){
                     char* start = m_position;
+                    int length = 0;
                     m_position++;
-                    char* value;
                     while(isalpha(*m_position)){
+                        length++;
                         m_position++;
                     }
-                    size_t length = sizeof(char) * (m_position - start);
+                    length++;
+                    char* value = new char[length];
                     memcpy(value, start, length);
                     value[length] = '\0';
                     if(strcmp(value, "println") == 0){
+                        m_position++;
                         return { TokenType::T_PRINTLN, value };
                     }
                     if(strcmp(value, "print") == 0){
+                        m_position++;
                         return { TokenType::T_PRINT, value };
                     }
                 }

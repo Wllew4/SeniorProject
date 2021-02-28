@@ -15,5 +15,7 @@ namespace Parser {
 
     void parse();
 
+    void parseExpression();
+
     void parseCurrentToken();
 }
