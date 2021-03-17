@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "Token.h"
-#include "ExprNode.h"
+#include "parser/Token.h"
+#include "parser/ExprNode.h"
 
 enum StmtNodeType {
     STMT_PRINT,
@@ -22,10 +22,4 @@ struct StmtNode {
             ExprNode* expr;
         } exprstmt;
     } val;
-
-    void exec (){
-        switch(type){
-
-        }
-    }
 };

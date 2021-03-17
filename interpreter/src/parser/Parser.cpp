@@ -1,7 +1,9 @@
-#include "Parser.h"
-#include "Lexer.h"
+#include "parser/Parser.h"
+#include "parser/Lexer.h"
 #include "util/Log.h"
+#include "util/File.h"
 #include "config.h"
+#include "Exec.h"
 
 #include <iostream>
 
@@ -9,20 +11,17 @@ void Parser::parseNext(){
     m_current = m_next;
     m_next = Lexer::getNextToken();
     if(options[1]){
-        printToken();
-        fflush(stdout);
+        Log::PrintToken(m_next.type, m_next.value);
     }
 }
 
-void Parser::printToken(){
-    static const char* tokentypes[] = {"Var", "String", "Number", "Print", "Printline", "EQ", "Plus", "Minus", "Semicolon", "EOF"};
-    Log::Print(6,"TOKEN:\t", "Type: ", tokentypes[m_next.type], "\t\t", m_next.value, "\n");
-}
-
-void Parser::parse(){
+void Parser::parse(char* file){
+    Lexer::Init(File::readFile(file));
+    parseNext();
     while(m_next.type != TokenType::T_EOF){
+        StmtNode* statement = parseNode();
+        Exec(statement);
         parseNext();
-        parseNode();
     }
     exit(0);
 }
@@ -44,35 +43,34 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
-            //std::cout << "returns here\n";
-            Log::UnexpectedToken(Lexer::m_line, m_next.value);
+            
+            Log::UnexpectedToken(Lexer::getLine(), m_next.value);
             exit(0);
     }
 }
 
 ExprNode* Parser::parseUnopExpr(){
     ExprNode* expr = NULL;
-    // while(m_next.type == T_MINUS){
-    //     parseNext();
-    //     ExprNode* oldexpr = expr;
-    //     expr->type = ExprNodeType::EXPR_UNOP;
-    //     expr->val.unop = {oldexpr, '-'};
-    // }
+    while(m_next.type == T_MINUS){
+        parseNext();
+        ExprNode* oldexpr = expr;
+        expr->type = ExprNodeType::EXPR_UNOP;
+        expr->val.unop = {oldexpr, '-'};
+    }
     if(expr == NULL) expr = parseAtomicExpr();
     else {
         ExprNode* traversal = expr;
         while(traversal->val.unop.left != NULL){
             traversal = traversal->val.unop.left;
         }
-        //traversal->val.unop.left = parseAtomicExpr();
+        traversal->val.unop.left = parseAtomicExpr();
     }
-    //std::cout << "returns here";
     return expr;
 }
 
 ExprNode* Parser::parseBinopExpr(){
     ExprNode* expr = parseUnopExpr();
-    while(m_next.type == T_PLUS || T_MINUS){
+    while(m_next.type == T_PLUS || m_next.type == T_MINUS){
         char type = m_next.type == T_PLUS ? '+' : '-';
         parseNext();
         ExprNode* left = expr;
@@ -104,39 +102,21 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_SEMICOLON){
-                node->type = StmtNodeType::STMT_PRINTLN;
                 node->val.print.expr_string = expr;
             }
-            else Log::Error(1, "nope!");
-
+            else Log::MissingSemicolon(Lexer::getLine());
             return node;
         }
-            
-            // if(m_next.type == TokenType::T_STRING || m_next.type == TokenType::T_NUM){
-            //     // printf("%s\n", m_next.value);
-            // }
-            // else {
-            //     Log::UnexpectedToken(Lexer::m_line, m_next.value);
-            // }
         case TokenType::T_PRINT: {
             node->type = StmtNodeType::STMT_PRINT;
             parseNext();
             ExprNode* expr = parseExpr();
-            if(m_current.type == TokenType::T_SEMICOLON){
-                std::cout << "yeah!";
-                node->type = StmtNodeType::STMT_PRINT;
+            if(m_next.type == TokenType::T_SEMICOLON){
                 node->val.print.expr_string = expr;
             }
-            else Log::Error(1, "nope!");
-
+            else Log::MissingSemicolon(Lexer::getLine());
             return node;
         }
-            // if(m_next.type == TokenType::T_STRING || m_next.type == TokenType::T_NUM){
-            //     // printf("%s", m_next.value);
-            // }
-            // else {
-            //     Log::UnexpectedToken(Lexer::m_line, m_next.value);
-            // }
             break;
         default: {
             ExprNode* expr = parseExpr();

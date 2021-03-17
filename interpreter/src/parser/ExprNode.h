@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "Token.h"
+#include "parser/Token.h"
 
 enum ExprNodeType {
     EXPR_NUM,

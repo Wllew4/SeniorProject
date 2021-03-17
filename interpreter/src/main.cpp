@@ -12,46 +12,15 @@
 
 const char* version_string = "0.1.0";
 
-#include <stdio.h>
-#include <stdlib.h>
+
 #include <string.h>
 #include <string>
 
 #include "util/Log.h"
-#include "parser/Lexer.h"
 #include "parser/Parser.h"
 #include "config.h"
 
 bool options[2] = {0,0};
-
-char* readFile(char* file){
-    FILE* f = fopen(file, "rb");
-
-    if(f){
-        fseek(f, 0, SEEK_END);
-        int bufsize = ftell(f);
-        fseek(f, 0, SEEK_SET);
-
-        char* buffer = new char[bufsize + 1];
-        buffer[bufsize] = '\0';
-
-        int readsize = fread(buffer, sizeof(char), bufsize, f);
-        if(bufsize != readsize){
-            free(buffer);
-            Log::Error(3,"Could not allocate memory for file ", file, "\n");
-            exit(1);
-        }
-        fclose(f);
-        if(options[0]){
-            Log::Print(5,"DEBUG Print source file: ", file, "\n", buffer, "\n\n");
-        }
-
-        return buffer;
-    } else {
-        Log::Error(3,"Could not find file ", file, "\n");
-        exit(1);
-    }
-}
 
 int main(int argc, char** argv){
     setbuf(stdout, NULL);
@@ -75,6 +44,7 @@ int main(int argc, char** argv){
         }
     }
 
+    #pragma region printDebugOptions
     int enabledDebuggerC = 0;
     for(bool i : options){
         if(i) enabledDebuggerC++;
@@ -87,7 +57,7 @@ int main(int argc, char** argv){
             options[1] ? " Print Tokens" : "",
             "\n\n");
     }
+    #pragma endregion
 
-    Lexer::Init(readFile(*fileArg));
-    Parser::parse();
+    Parser::parse(*fileArg);
 }

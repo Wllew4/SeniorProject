@@ -1,12 +1,18 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "Lexer.h"
-#include "Token.h"
+#include "parser/Lexer.h"
+#include "parser/Token.h"
+
+#include <iostream>
 
 void Lexer::Init(char* file){
     m_line = 1;
     m_position = file;
+}
+
+int Lexer::getLine(){
+    return m_line;
 }
 
 Token Lexer::getNextToken(){
@@ -19,7 +25,7 @@ Token Lexer::getNextToken(){
                 break;
             case '\n':
                 m_position++;
-                m_line++;
+                m_line ++;
                 break;
             case '+':
                 m_position++;

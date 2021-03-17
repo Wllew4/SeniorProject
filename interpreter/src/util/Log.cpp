@@ -1,5 +1,4 @@
 #include "Log.h"
-#include <stdio.h>
 #include <stdarg.h>
 #include <iostream>
 
@@ -11,6 +10,10 @@ void Log::Error(int size, ...){
         std::cout << va_arg(args, const char*);
     }
     va_end(args);
+
+    fflush(stdout);
+
+    exit(0);
 }
 
 void Log::Print(int size, ...){
@@ -21,6 +24,13 @@ void Log::Print(int size, ...){
         std::cout << va_arg(args, const char*);
     }
     va_end(args);
+
+    fflush(stdout);
+}
+
+void Log::PrintToken(int type, const char* val){
+    static const char* tokentypes[] = {"Var", "String", "Number", "Print", "Printline", "EQ", "Plus", "Minus", "Semicolon", "EOF"};
+    Log::Print(6,"TOKEN:\t", "Type: ", tokentypes[type], "\t\t", val, "\n");
 }
 
 void Log::UnexpectedToken(int line, const char* value){
@@ -28,4 +38,10 @@ void Log::UnexpectedToken(int line, const char* value){
     itoa(line, linebuf, 10);
     Log::Error(4, "Unexpected token on line ", linebuf, ": ", value);
     delete linebuf;
+}
+
+void Log::MissingSemicolon(int line){
+    char* linebuf = new char[5];
+    itoa(line, linebuf, 10);
+    Log::Error(3, "Missing semicolon on line ", linebuf, "\n");
 }
