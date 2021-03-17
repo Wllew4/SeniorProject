@@ -1,1 +1,1 @@
-g++ interpreter/src/*.cpp interpreter/src/util/*.cpp -o ./interpreter/bin/janelle.exe -I interpreter/src && .\interpreter\bin\janelle.exe examples/helloworld.jan --debug-printtokens
+g++ interpreter/src/*.cpp interpreter/src/util/*.cpp interpreter/src/parser/*.cpp -o ./interpreter/bin/janelle.exe -I interpreter/src && .\interpreter\bin\janelle.exe examples/helloworld.jan --debug-printtokens

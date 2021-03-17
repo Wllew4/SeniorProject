@@ -18,8 +18,8 @@ const char* version_string = "0.1.0";
 #include <string>
 
 #include "util/Log.h"
-#include "Lexer.h"
-#include "Parser.h"
+#include "parser/Lexer.h"
+#include "parser/Parser.h"
 #include "config.h"
 
 bool options[2] = {0,0};
@@ -54,6 +54,7 @@ char* readFile(char* file){
 }
 
 int main(int argc, char** argv){
+    setbuf(stdout, NULL);
     if(argc == 1){ Log::Error(1,"No file name or arguments provided"); exit(1); }
     char** fileArg;
     for(int i = 1; i < argc; i++){

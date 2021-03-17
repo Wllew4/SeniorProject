@@ -6,6 +6,9 @@ enum TokenType {
     T_NUM,
     T_PRINT,
     T_PRINTLN,
+    T_EQ,
+    T_PLUS,
+    T_MINUS,
     T_SEMICOLON,
     T_EOF
 };

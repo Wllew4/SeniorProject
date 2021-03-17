@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Token.h"
-#include "Node.h"
+#include "StmtNode.h"
 
 namespace Parser {
     namespace {
@@ -15,7 +15,11 @@ namespace Parser {
 
     void parse();
 
-    void parseExpression();
+    ExprNode* parseAtomicExpr();
+    ExprNode* parseUnopExpr();
+    ExprNode* parseBinopExpr();
 
-    void parseCurrentToken();
+    ExprNode* parseExpr();
+
+    StmtNode* parseNode();
 }

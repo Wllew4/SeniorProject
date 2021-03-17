@@ -21,6 +21,12 @@ Token Lexer::getNextToken(){
                 m_position++;
                 m_line++;
                 break;
+            case '+':
+                m_position++;
+                return { TokenType::T_PLUS, "+" };
+            case '-':
+                m_position++;
+                return { TokenType::T_MINUS, "-" };
             case ';':
                 m_position++;
                 return { TokenType::T_SEMICOLON, ";" };
