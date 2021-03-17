@@ -1,1 +1,13 @@
-g++ interpreter/src/*.cpp interpreter/src/util/*.cpp interpreter/src/parser/*.cpp -o ./interpreter/bin/janelle.exe -I interpreter/src && .\interpreter\bin\janelle.exe examples/helloworld.jan
+@echo off
+
+set sourcefile=examples/helloworld.jan
+
+set sourcepaths=interpreter\src\*.cpp interpreter\src\util\*.cpp interpreter\src\parser\*.cpp
+set output=.\interpreter\bin\janelle.exe
+set includepaths=interpreter/src
+
+::  Compile
+g++ %sourcepaths% -o %output% -I %includepaths%
+
+::  Execute
+%output% %sourcefile%
