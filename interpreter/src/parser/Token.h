@@ -1,9 +1,11 @@
 #pragma once
 
 enum TokenType {
-    T_VAR,
+    T_STRINGDECL,
+    T_NUMDECL,
     T_STRING,
     T_NUM,
+    T_ID,
     T_PRINT,
     T_PRINTLN,
     T_EQ,

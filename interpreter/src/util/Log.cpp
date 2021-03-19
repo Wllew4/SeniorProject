@@ -29,7 +29,7 @@ void Log::Print(int size, ...){
 }
 
 void Log::PrintToken(int type, const char* val){
-    static const char* tokentypes[] = {"Var", "String", "Number", "Print", "Printline", "EQ", "Plus", "Minus", "Semicolon", "EOF"};
+    static const char* tokentypes[] = {"StringDecl", "NumDecl", "String", "Number", "ID", "Print", "Printline", "EQ", "Plus", "Minus", "Semicolon", "EOF"};
     Log::Print(6,"TOKEN:\t", "Type: ", tokentypes[type], "\t\t", val, "\n");
 }
 

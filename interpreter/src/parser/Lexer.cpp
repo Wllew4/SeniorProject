@@ -36,6 +36,9 @@ Token Lexer::getNextToken(){
             case ';':
                 m_position++;
                 return { TokenType::T_SEMICOLON, ";" };
+            case '=':
+                m_position++;
+                return { TokenType::T_EQ, "=" };
             case '/':
                 if(*m_position + 1 == '/') while(*m_position != '\n') m_position++;
                 break;
@@ -80,6 +83,29 @@ Token Lexer::getNextToken(){
                         m_position++;
                         return { TokenType::T_PRINT, value };
                     }
+                    if(strcmp(value, "num") == 0){
+                        m_position++;
+                        return { TokenType::T_NUMDECL, value };
+                    }
+                    else {
+                        m_position++;
+                        return { TokenType::T_ID, value };
+                    }
+                }
+                if(isdigit(*m_position)){
+                    char* start = m_position;
+                    int length = 0;
+                    m_position++;
+                    while(isdigit(*m_position)){
+                        length++;
+                        m_position++;
+                    }
+                    length++;
+                    char* value = new char[length];
+                    memcpy(value, start, length);
+                    value[length] = '\0';
+
+                    return { TokenType::T_NUM, value };
                 }
         }
     }

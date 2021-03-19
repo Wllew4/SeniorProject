@@ -29,7 +29,12 @@ void Parser::parse(char* file){
 ExprNode* Parser::parseAtomicExpr(){
     parseNext();
     switch(m_current.type){
-        
+        case TokenType::T_ID: {
+            ExprNode* idexpr = new ExprNode;
+            idexpr->type = ExprNodeType::EXPR_ID;
+            idexpr->val.id.name = m_current.value;
+            return idexpr;
+        }
         case TokenType::T_NUM: {
             ExprNode* numexpr = new ExprNode;
             numexpr->type = ExprNodeType::EXPR_NUM;
@@ -43,7 +48,6 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
-            
             Log::UnexpectedToken(Lexer::getLine(), m_next.value);
             exit(0);
     }
@@ -87,6 +91,7 @@ ExprNode* Parser::parseExpr(){
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseExpr();
+        expr = new ExprNode;
         expr->type = ExprNodeType::EXPR_BINOP;
         expr->val.binop = {left, right, '='};
     }
@@ -117,10 +122,19 @@ StmtNode* Parser::parseNode(){
             else Log::MissingSemicolon(Lexer::getLine());
             return node;
         }
-            break;
+        case TokenType::T_NUMDECL: {
+            node->type = StmtNodeType::STMT_NUMDECL;
+            parseNext();
+            ExprNode* expr = parseExpr();
+            if(m_next.type == TokenType::T_SEMICOLON){
+                node->val.numassign.expr = expr;
+            }
+            else Log::MissingSemicolon(Lexer::getLine());
+            return node;
+        }
         default: {
             ExprNode* expr = parseExpr();
-            node->type = StmtNodeType::EXPR_STMT;
+            node->type = StmtNodeType::STMT_EXPR;
             node->val.exprstmt.expr = expr;
             return node;
         }

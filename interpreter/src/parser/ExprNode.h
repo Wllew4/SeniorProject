@@ -1,11 +1,11 @@
 #pragma once
-#include <vector>
 
 #include "parser/Token.h"
 
 enum ExprNodeType {
     EXPR_NUM,
     EXPR_STRING,
+    EXPR_ID,
     EXPR_BINOP,
     EXPR_UNOP
 };
@@ -21,6 +21,10 @@ struct ExprNode {
         struct {
             const char* value;
         } string;
+
+        struct {
+            const char* name;
+        } id;
 
         struct {
             ExprNode* left;

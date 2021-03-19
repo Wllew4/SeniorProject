@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #include "parser/Token.h"
 #include "parser/ExprNode.h"
@@ -7,7 +6,9 @@
 enum StmtNodeType {
     STMT_PRINT,
     STMT_PRINTLN,
-    EXPR_STMT
+    STMT_STRINGDECL,
+    STMT_NUMDECL,
+    STMT_EXPR
 };
 
 struct StmtNode {
@@ -21,5 +22,9 @@ struct StmtNode {
         struct {
             ExprNode* expr;
         } exprstmt;
+
+        struct {
+            ExprNode* expr;
+        } numassign;
     } val;
 };
