@@ -26,5 +26,9 @@ struct StmtNode {
         struct {
             ExprNode* expr;
         } numassign;
+
+        struct {
+            ExprNode* expr;
+        } stringassign;
     } val;
 };

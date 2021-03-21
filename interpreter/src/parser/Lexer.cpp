@@ -25,7 +25,7 @@ Token Lexer::getNextToken(){
                 break;
             case '\n':
                 m_position++;
-                m_line ++;
+                m_line++;
                 break;
             case '+':
                 m_position++;
@@ -87,8 +87,11 @@ Token Lexer::getNextToken(){
                         m_position++;
                         return { TokenType::T_NUMDECL, value };
                     }
-                    else {
+                    if(strcmp(value, "string") == 0){
                         m_position++;
+                        return { TokenType::T_STRINGDECL, value };
+                    }
+                    else {
                         return { TokenType::T_ID, value };
                     }
                 }
@@ -104,7 +107,6 @@ Token Lexer::getNextToken(){
                     char* value = new char[length];
                     memcpy(value, start, length);
                     value[length] = '\0';
-
                     return { TokenType::T_NUM, value };
                 }
         }

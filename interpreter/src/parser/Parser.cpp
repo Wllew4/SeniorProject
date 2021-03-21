@@ -48,7 +48,7 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
-            Log::UnexpectedToken(Lexer::getLine(), m_next.value);
+            Log::UnexpectedToken(m_next.value);
             exit(0);
     }
 }
@@ -109,7 +109,7 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val.print.expr_string = expr;
             }
-            else Log::MissingSemicolon(Lexer::getLine());
+            else Log::MissingSemicolon();
             return node;
         }
         case TokenType::T_PRINT: {
@@ -119,7 +119,7 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val.print.expr_string = expr;
             }
-            else Log::MissingSemicolon(Lexer::getLine());
+            else Log::MissingSemicolon();
             return node;
         }
         case TokenType::T_NUMDECL: {
@@ -129,7 +129,17 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val.numassign.expr = expr;
             }
-            else Log::MissingSemicolon(Lexer::getLine());
+            else Log::MissingSemicolon();
+            return node;
+        }
+        case TokenType::T_STRINGDECL: {
+            node->type = StmtNodeType::STMT_STRINGDECL;
+            parseNext();
+            ExprNode* expr = parseExpr();
+            if(m_next.type == TokenType::T_SEMICOLON){
+                node->val.stringassign.expr = expr;
+            }
+            else Log::MissingSemicolon();
             return node;
         }
         default: {
@@ -138,7 +148,6 @@ StmtNode* Parser::parseNode(){
             node->val.exprstmt.expr = expr;
             return node;
         }
-            
     }
     return node;
 }

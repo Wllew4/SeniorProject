@@ -3,7 +3,6 @@
  *      Bedford High School Senior Project
  * 
  *      TO-DO:
- *          - Variables (weakly typed or strings/numbers)
  *          - Conditionals
  *          - Recursion
  *          - Math

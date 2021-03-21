@@ -1,2 +1,4 @@
 num a = 420;
-a = 69;
+string h = "hello world!";
+println a;
+println h;
