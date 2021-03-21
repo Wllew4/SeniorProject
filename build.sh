@@ -21,4 +21,5 @@ g++ intermediates/*.o -o $output
 rm -r intermediates
 
 #		Execute
+#	segmentation fault?
 $output $sourcefile $flags
