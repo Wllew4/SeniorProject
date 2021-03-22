@@ -1,6 +1,8 @@
 #include "Exec.h"
-#include "object/Object.h"
+#include "object/ObjectBuffer.h"
 #include <iostream>
+
+ObjectBuffer ProgramBuffer;
 
 void Exec(StmtNode* statement){
     switch(statement->type){

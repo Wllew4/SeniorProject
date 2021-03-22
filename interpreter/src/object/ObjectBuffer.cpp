@@ -1,11 +1,6 @@
-#include "object/Object.h"
+#include "object/ObjectBuffer.h"
 #include "util/Log.h"
-#include <iostream>
 #include <string.h>
-#include <string>
-#include <stdio.h>
-
-ObjectBuffer ProgramBuffer;
 
 Object* ObjectBuffer::GetObjectByName(const char* name){
     for(Num* obj : numbuffer){
@@ -53,12 +48,4 @@ void ObjectBuffer::AddNum(const char* name, double* value){
 
 void ObjectBuffer::AddString(const char* name, const char* value){
     stringbuffer.push_back(new String(name, value));
-}
-
-std::string Num::getString(){
-    return std::to_string(*this->getValue());
-}
-
-std::string String::getString(){
-    return this->getValue();
 }
