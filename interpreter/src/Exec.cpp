@@ -20,7 +20,7 @@ void Exec(StmtNode* statement){
             return;
         case StmtNodeType::STMT_NUMDECL:
             if(statement->val.numassign.expr->type == ExprNodeType::EXPR_ID){
-                ProgramBuffer.AddNum(statement->val.numassign.expr->val.id.name, 0);
+                ProgramBuffer.AddNum(statement->val.numassign.expr->val.id.name, new double(0));
                 break;
             }
             ProgramBuffer.AddNum(statement->val.exprstmt.expr->val.binop.left->val.id.name, 0);
@@ -30,7 +30,7 @@ void Exec(StmtNode* statement){
 
         case StmtNodeType::STMT_STRINGDECL:
             if(statement->val.stringassign.expr->type == ExprNodeType::EXPR_ID){
-                ProgramBuffer.AddString(statement->val.stringassign.expr->val.id.name, 0);
+                ProgramBuffer.AddString(statement->val.stringassign.expr->val.id.name, new char(0));
                 break;
             }
             ProgramBuffer.AddString(statement->val.exprstmt.expr->val.binop.left->val.id.name, 0);
