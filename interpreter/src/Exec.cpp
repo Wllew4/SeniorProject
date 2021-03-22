@@ -25,6 +25,7 @@ void Exec(StmtNode* statement){
             }
             ProgramBuffer.AddNum(statement->val.exprstmt.expr->val.binop.left->val.id.name, 0);
             ProgramBuffer.GetNumByName(statement->val.exprstmt.expr->val.binop.left->val.id.name)->setValue(&statement->val.exprstmt.expr->val.binop.right->val.num.value);
+						
             break;
 
         case StmtNodeType::STMT_STRINGDECL:

@@ -99,7 +99,7 @@ ExprNode* Parser::parseExpr(){
 }
 
 StmtNode* Parser::parseNode(){
-    StmtNode* node;
+    StmtNode* node = new StmtNode;
 
     switch (m_next.type){
         case TokenType::T_PRINTLN: {
