@@ -18,8 +18,8 @@ Object* ObjectBuffer::GetObjectByName(const char* name){
             return obj;
         }
     }
-    Log::UnrecognizedIdentifier(name);
-    exit(0);
+    //Log::UnrecognizedIdentifier(name);
+    return nullptr;
 }
 
 Num* ObjectBuffer::GetNumByName(const char* name){

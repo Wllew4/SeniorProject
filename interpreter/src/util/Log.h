@@ -10,4 +10,5 @@ namespace Log {
     void UnexpectedToken(const char* value);
     void MissingSemicolon();
     void UnrecognizedIdentifier(const char* value);
+    void RedefinedIdentifier(const char* value);
 }

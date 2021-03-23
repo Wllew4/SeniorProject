@@ -1,6 +1,1 @@
-string a = "420";
-string b = "yo";
-string c = a + b + " ayo";
-println c;
-println b;
-println a;
+println "Hello world!";

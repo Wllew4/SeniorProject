@@ -5,14 +5,18 @@
 #include "parser/Token.h"
 
 #include <iostream>
+#include <string>
+
+char* m_position;
+int m_line = 1;
 
 void Lexer::Init(char* file){
     m_line = 1;
     m_position = file;
 }
 
-int Lexer::getLine(){
-    return m_line;
+const char* Lexer::getLine(){
+    return std::to_string(m_line).c_str();
 }
 
 Token Lexer::getNextToken(){

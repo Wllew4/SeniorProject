@@ -1,13 +1,16 @@
 #include "parser/Exec.h"
 #include "object/ObjectBuffer.h"
 #include "util/Log.h"
+#include "util/Debug.h"
 #include <iostream>
 
 ObjectBuffer ProgramBuffer;
 
 void Exec(StmtNode* statement){
 
-    Log::PrintStatement(statement->type);
+    if(options[2]){
+        Log::PrintStatement(statement->type);
+    }
 
     switch(statement->type){
         //  Printing
@@ -28,6 +31,10 @@ void Exec(StmtNode* statement){
         
         //Number Declaration
         case StmtNodeType::STMT_NUMDECL:
+            if(ProgramBuffer.GetObjectByName(statement->val->val.id.name) != nullptr){
+                Log::RedefinedIdentifier(statement->val->val.id.name);
+                exit(0);
+            }
             if(statement->val->type == ExprNodeType::EXPR_ID){
                 ProgramBuffer.AddNum(statement->val->val.id.name, new double(0));
                 break;
@@ -38,12 +45,16 @@ void Exec(StmtNode* statement){
 
         //String Declaration
         case StmtNodeType::STMT_STRINGDECL:
+        if(ProgramBuffer.GetObjectByName(statement->val->val.id.name) != nullptr){
+                Log::RedefinedIdentifier(statement->val->val.id.name);
+                exit(0);
+            }
             if(statement->val->type == ExprNodeType::EXPR_ID){
                 ProgramBuffer.AddString(statement->val->val.id.name, new char(0));
                 break;
             }
             ProgramBuffer.AddString(statement->val->val.binop.left->val.id.name, 0);
-            ProgramBuffer.GetStringByName(statement->val->val.binop.left->val.id.name)->setValue(statement->val->val.binop.right->val.string.value);
+            ProgramBuffer.GetStringByName(statement->val->val.binop.left->val.id.name)->setRvalue(statement->val->val.binop.right);
             break;
 
         //Expression Statements

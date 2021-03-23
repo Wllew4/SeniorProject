@@ -1,5 +1,6 @@
 #include "object/String.h"
 #include "object/ObjectBuffer.h"
+#include "util/Log.h"
 
 extern ObjectBuffer ProgramBuffer;
 
@@ -28,11 +29,11 @@ const char* String::parseRvalue(ExprNode* node){
             node->val.binop.right->val.string.value = ProgramBuffer.GetStringByName(node->val.binop.right->val.id.name)->getValue();
         }
         if(node->val.binop.op_type == '+'){
-            std::cout << "concat";
-            //concat strings
+            std::string* concat = new std::string(std::string(parseRvalue(node->val.binop.left)) + std::string(parseRvalue(node->val.binop.right)));
+            result = (*concat).c_str();
         }
         else {
-            //  Make an error here
+            Log::UnexpectedToken(&node->val.binop.op_type);
         }
     }
     else {

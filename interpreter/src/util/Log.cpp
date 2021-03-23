@@ -46,16 +46,17 @@ void Log::PrintStatement(int type){
 }
 
 void Log::UnexpectedToken(const char* value){
-    std::string linebuf = std::to_string(Lexer::m_line);
-    Log::Error(4, "Unexpected token on line ", linebuf, ": ", value);
+    Log::Error(4, "Unexpected token on line ", Lexer::getLine(), ": ", value);
 }
 
 void Log::MissingSemicolon(){
-    std::string linebuf = std::to_string(Lexer::m_line);
-    Log::Error(3, "Missing semicolon on line ", linebuf, "\n");
+    Log::Error(3, "Missing semicolon on line ", Lexer::getLine(), "\n");
 }
 
 void Log::UnrecognizedIdentifier(const char* value){
-    std::string linebuf = std::to_string(Lexer::m_line);
-    Log::Error(4, "Unrecognized Identifier on line ", linebuf, ": ", value);
+    Log::Error(4, "Unrecognized Identifier on line ", Lexer::getLine(), ": ", value);
+}
+
+void Log::RedefinedIdentifier(const char* value){
+    Log::Error(4, "Redefined Identifier on line ", Lexer::getLine(), ": ", value);
 }
