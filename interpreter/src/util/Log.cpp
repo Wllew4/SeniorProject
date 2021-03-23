@@ -41,6 +41,10 @@ void Log::PrintToken(int type, const char* val){
     Log::Print(5,"TOKEN:\t", "Type: ", tokentypes[type], val, "\n");
 }
 
+void Log::PrintStatement(int type){
+    Log::Print(4,"STATEMENT:\t", "Type: ", std::to_string(type).c_str(), "\n");
+}
+
 void Log::UnexpectedToken(const char* value){
     std::string linebuf = std::to_string(Lexer::m_line);
     Log::Error(4, "Unexpected token on line ", linebuf, ": ", value);

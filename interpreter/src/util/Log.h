@@ -5,6 +5,7 @@ namespace Log {
     void Print(int size, ...);
 
     void PrintToken(int type, const char* val);
+    void PrintStatement(int type);
     
     void UnexpectedToken(const char* value);
     void MissingSemicolon();

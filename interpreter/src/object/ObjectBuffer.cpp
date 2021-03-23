@@ -42,6 +42,21 @@ String* ObjectBuffer::GetStringByName(const char* name){
     exit(0);
 }
 
+ObjectType ObjectBuffer::GetObjectType(const char* name){
+    for(Num* obj : numbuffer){
+        if(strcmp(obj->getName(), name) == 0){
+            return ObjectType::OBJ_NUM;
+        }
+    }
+    for(String* obj : stringbuffer){
+        if(strcmp(obj->getName(), name) == 0){
+            return ObjectType::OBJ_STRING;
+        }
+    }
+    Log::UnrecognizedIdentifier(name);
+    exit(0);
+}
+
 void ObjectBuffer::AddNum(const char* name, double* value){
     numbuffer.push_back(new Num(name, value));
 }

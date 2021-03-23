@@ -1,7 +1,7 @@
 #include <string>
 
 #include "util/Log.h"
-#include "config.h"
+#include "util/Debug.h"
 #include "util/File.h"
 
 char* File::readFile(char* file){

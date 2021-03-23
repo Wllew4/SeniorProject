@@ -1,9 +1,9 @@
 #include "parser/Parser.h"
 #include "parser/Lexer.h"
+#include "parser/Exec.h"
 #include "util/Log.h"
 #include "util/File.h"
-#include "config.h"
-#include "Exec.h"
+#include "util/Debug.h"
 
 #include <iostream>
 
@@ -58,6 +58,7 @@ ExprNode* Parser::parseUnopExpr(){
     while(m_next.type == T_MINUS){
         parseNext();
         ExprNode* oldexpr = expr;
+        expr = new ExprNode;
         expr->type = ExprNodeType::EXPR_UNOP;
         expr->val.unop = {oldexpr, '-'};
     }
@@ -79,6 +80,7 @@ ExprNode* Parser::parseBinopExpr(){
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseUnopExpr();
+        expr = new ExprNode;
         expr->type = ExprNodeType::EXPR_BINOP;
         expr->val.binop = {left, right, type};
     }
@@ -107,7 +109,7 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_SEMICOLON){
-                node->val.print.expr_string = expr;
+                node->val = expr;
             }
             else Log::MissingSemicolon();
             return node;
@@ -117,7 +119,7 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_SEMICOLON){
-                node->val.print.expr_string = expr;
+                node->val = expr;
             }
             else Log::MissingSemicolon();
             return node;
@@ -127,7 +129,7 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_SEMICOLON){
-                node->val.numassign.expr = expr;
+                node->val = expr;
             }
             else Log::MissingSemicolon();
             return node;
@@ -137,7 +139,7 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_SEMICOLON){
-                node->val.stringassign.expr = expr;
+                node->val = expr;
             }
             else Log::MissingSemicolon();
             return node;
@@ -145,7 +147,7 @@ StmtNode* Parser::parseNode(){
         default: {
             ExprNode* expr = parseExpr();
             node->type = StmtNodeType::STMT_EXPR;
-            node->val.exprstmt.expr = expr;
+            node->val = expr;
             return node;
         }
     }

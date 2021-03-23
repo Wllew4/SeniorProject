@@ -14,21 +14,5 @@ enum StmtNodeType {
 struct StmtNode {
     StmtNodeType type;
 
-    union {
-        struct {
-            ExprNode* expr_string;
-        } print;
-        
-        struct {
-            ExprNode* expr;
-        } exprstmt;
-
-        struct {
-            ExprNode* expr;
-        } numassign;
-
-        struct {
-            ExprNode* expr;
-        } stringassign;
-    } val;
+    ExprNode* val;
 };

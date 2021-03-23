@@ -1,4 +1,6 @@
-num a = 420 + 1;
-string h = "hello world!";
+string a = "420";
+string b = "yo";
+string c = a + b + " ayo";
+println c;
+println b;
 println a;
-println h;
