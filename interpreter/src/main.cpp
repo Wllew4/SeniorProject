@@ -3,9 +3,8 @@
  *      Bedford High School Senior Project
  * 
  *      TO-DO:
- *          - Math
- *          - Conditionals
  *          - Recursion
+ *          - PEMDAS
  *          - Rendering
  */
 

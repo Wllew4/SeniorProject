@@ -8,7 +8,7 @@ namespace Log {
     void PrintStatement(int type);
     
     void UnexpectedToken(const char* value);
-    void MissingSemicolon();
+    void MissingToken(int x);
     void UnrecognizedIdentifier(const char* value);
     void RedefinedIdentifier(const char* value);
 }

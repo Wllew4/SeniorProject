@@ -19,6 +19,8 @@ namespace Parser {
     ExprNode* parseUnopExpr();
     ExprNode* parseBinopExpr();
 
+    ExprNode* parseBooleanExpr();
+
     ExprNode* parseExpr();
 
     StmtNode* parseNode();

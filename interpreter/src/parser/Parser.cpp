@@ -75,8 +75,15 @@ ExprNode* Parser::parseUnopExpr(){
 
 ExprNode* Parser::parseBinopExpr(){
     ExprNode* expr = parseUnopExpr();
-    while(m_next.type == T_PLUS || m_next.type == T_MINUS){
-        char type = m_next.type == T_PLUS ? '+' : '-';
+    while(m_next.type == T_PLUS || m_next.type == T_MINUS || m_next.type == T_MULT || m_next.type == T_DIV || m_next.type == T_MODULUS){
+        char type;
+        switch(m_next.type){
+            case T_PLUS: type = '+'; break;
+            case T_MINUS: type = '-'; break;
+            case T_MULT: type = '*'; break;
+            case T_DIV: type = '/'; break;
+            case T_MODULUS: type = '%'; break;
+        }
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseUnopExpr();
@@ -111,7 +118,7 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val = expr;
             }
-            else Log::MissingSemicolon();
+            else Log::MissingToken(TokenType::T_SEMICOLON);
             return node;
         }
         case TokenType::T_PRINT: {
@@ -121,7 +128,7 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val = expr;
             }
-            else Log::MissingSemicolon();
+            else Log::MissingToken(TokenType::T_SEMICOLON);
             return node;
         }
         case TokenType::T_NUMDECL: {
@@ -131,7 +138,7 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val = expr;
             }
-            else Log::MissingSemicolon();
+            else Log::MissingToken(TokenType::T_SEMICOLON);
             return node;
         }
         case TokenType::T_STRINGDECL: {
@@ -141,7 +148,22 @@ StmtNode* Parser::parseNode(){
             if(m_next.type == TokenType::T_SEMICOLON){
                 node->val = expr;
             }
-            else Log::MissingSemicolon();
+            else Log::MissingToken(TokenType::T_SEMICOLON);
+            return node;
+        }
+        case TokenType::T_IF: {
+            node->type = StmtNodeType::STMT_CONDITIONAL;
+            parseNext();
+            ExprNode* expr = parseExpr();
+            if(m_next.type == TokenType::T_OPENBRACE){
+                node->val = expr;
+            }
+            else Log::MissingToken(TokenType::T_OPENBRACE);
+            parseNext();
+            while(m_next.type != T_CLOSEBRACE){
+                node->body.push_back(parseNode());
+                parseNext();
+            }
             return node;
         }
         default: {

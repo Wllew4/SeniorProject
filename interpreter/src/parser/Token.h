@@ -11,6 +11,12 @@ enum TokenType {
     T_EQ,
     T_PLUS,
     T_MINUS,
+    T_MULT,
+    T_DIV,
+    T_MODULUS,
+    T_IF,
+    T_OPENBRACE,
+    T_CLOSEBRACE,
     T_SEMICOLON,
     T_EOF
 };

@@ -37,6 +37,18 @@ Token Lexer::getNextToken(){
             case '-':
                 m_position++;
                 return { TokenType::T_MINUS, "-" };
+            case '*':
+                m_position++;
+                return { TokenType::T_MULT, "*" };
+            case '%':
+                m_position++;
+                return { TokenType::T_MODULUS, "%" };
+            case '{':
+                m_position++;
+                return { TokenType::T_OPENBRACE, "{" };
+            case '}':
+                m_position++;
+                return { TokenType::T_CLOSEBRACE, "}" };
             case ';':
                 m_position++;
                 return { TokenType::T_SEMICOLON, ";" };
@@ -44,7 +56,13 @@ Token Lexer::getNextToken(){
                 m_position++;
                 return { TokenType::T_EQ, "=" };
             case '/':
-                if(*m_position + 1 == '/') while(*m_position != '\n') m_position++;
+                if(*m_position + 1 == '/'){
+                    while(*m_position != '\n') m_position++;
+                }
+                else{
+                    m_position++;
+                    return { TokenType::T_DIV, "/" };
+                }
                 break;
             
             case '\0':
@@ -94,6 +112,10 @@ Token Lexer::getNextToken(){
                     if(strcmp(value, "string") == 0){
                         m_position++;
                         return { TokenType::T_STRINGDECL, value };
+                    }
+                    if(strcmp(value, "if") == 0){
+                        m_position++;
+                        return { TokenType::T_IF, value };
                     }
                     else {
                         return { TokenType::T_ID, value };

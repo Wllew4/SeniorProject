@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set sourcefile=examples/helloworld.jan
-::set flags=--debug-printstatements
+set flags=--debug-printtokens
 
 set output=.\interpreter\bin\janelle.exe
 set includepaths=interpreter/src

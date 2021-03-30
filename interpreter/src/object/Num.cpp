@@ -1,6 +1,9 @@
 #include "object/Num.h"
-#include <string>
 #include "object/ObjectBuffer.h"
+#include "util/Math.h"
+
+#include <string>
+#include <vector>
 
 extern ObjectBuffer ProgramBuffer;
 
@@ -31,10 +34,18 @@ double* Num::parseRvalue(ExprNode* node){
         switch(node->val.binop.op_type){
             case '+':
                 *result = *parseRvalue(node->val.binop.left) + *parseRvalue(node->val.binop.right);
-
                 break;
             case '-':
                 *result = *parseRvalue(node->val.binop.left) - *parseRvalue(node->val.binop.right);
+                break;
+            case '*':
+                *result = *parseRvalue(node->val.binop.left) * *parseRvalue(node->val.binop.right);
+                break;
+            case '/':
+                *result = *parseRvalue(node->val.binop.left) / *parseRvalue(node->val.binop.right);
+                break;
+            case '%':
+                *result = modulus(*parseRvalue(node->val.binop.left), *parseRvalue(node->val.binop.right));
                 break;
         }
     }

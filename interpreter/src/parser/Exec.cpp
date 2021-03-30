@@ -45,7 +45,7 @@ void Exec(StmtNode* statement){
 
         //String Declaration
         case StmtNodeType::STMT_STRINGDECL:
-        if(ProgramBuffer.GetObjectByName(statement->val->val.id.name) != nullptr){
+            if(ProgramBuffer.GetObjectByName(statement->val->val.id.name) != nullptr){
                 Log::RedefinedIdentifier(statement->val->val.id.name);
                 exit(0);
             }
@@ -55,6 +55,24 @@ void Exec(StmtNode* statement){
             }
             ProgramBuffer.AddString(statement->val->val.binop.left->val.id.name, 0);
             ProgramBuffer.GetStringByName(statement->val->val.binop.left->val.id.name)->setRvalue(statement->val->val.binop.right);
+            break;
+
+        case StmtNodeType::STMT_CONDITIONAL:
+            switch(statement->val->val.binop.op_type){
+                case '=':
+                    double* left;
+                    double* right;
+                    if(statement->val->val.binop.left->type == ExprNodeType::EXPR_ID) left = ProgramBuffer.GetNumByName(statement->val->val.binop.left->val.id.name)->getValue();
+                    else left = &statement->val->val.binop.left->val.num.value;
+                    if(statement->val->val.binop.right->type == ExprNodeType::EXPR_ID) right = ProgramBuffer.GetNumByName(statement->val->val.binop.right->val.id.name)->getValue();
+                    else right = &statement->val->val.binop.right->val.num.value;
+                    if(*left == *right){
+                        for(StmtNode* conditionals : statement->body){
+                            Exec(conditionals);
+                        }
+                    }
+                    break;
+            }
             break;
 
         //Expression Statements
@@ -67,5 +85,6 @@ void Exec(StmtNode* statement){
                     ProgramBuffer.GetStringByName(statement->val->val.binop.left->val.id.name)->setValue(statement->val->val.binop.right->val.string.value);
                     break;
             }
+            break;
     }
 }

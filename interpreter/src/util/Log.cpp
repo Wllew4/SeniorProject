@@ -3,6 +3,19 @@
 #include <stdarg.h>
 #include <iostream>
 #include <string>
+#include <cstring>
+
+static const char* tokentypes[] = {
+    "StringDecl",   "NumDecl",
+    "String",       "Number",
+    "ID",           "Print",
+    "Printline",    "EQ",
+    "Plus",         "Minus",
+    "Mult",         "Div",
+    "Modulus",      "If",
+    "OpenBrace",    "CloseBrace",
+    "Semicolon",    "EOF"
+};
 
 void Log::Error(int size, ...){
     va_list args;
@@ -31,14 +44,7 @@ void Log::Print(int size, ...){
 }
 
 void Log::PrintToken(int type, const char* val){
-    static const char* tokentypes[] = {
-        "StringDecl\t",   "NumDecl\t\t",
-        "String\t\t",       "Number\t\t",
-        "ID\t\t",           "Print\t\t",
-        "Printline\t\t",    "EQ\t\t",
-        "Plus\t\t",         "Minus\t\t",
-        "Semicolon\t\t",    "EOF\t\t"};
-    Log::Print(5,"TOKEN:\t", "Type: ", tokentypes[type], val, "\n");
+    Log::Print(6,"TOKEN:\t", "Type: ", tokentypes[type], strlen(tokentypes[type]) < 10 ? "\t\t" : "\t", val, "\n");
 }
 
 void Log::PrintStatement(int type){
@@ -49,8 +55,8 @@ void Log::UnexpectedToken(const char* value){
     Log::Error(4, "Unexpected token on line ", Lexer::getLine(), ": ", value);
 }
 
-void Log::MissingSemicolon(){
-    Log::Error(3, "Missing semicolon on line ", Lexer::getLine(), "\n");
+void Log::MissingToken(int x){
+    Log::Error(5, "Missing token of type ", tokentypes[x], " on line ", Lexer::getLine(), "\n");
 }
 
 void Log::UnrecognizedIdentifier(const char* value){
