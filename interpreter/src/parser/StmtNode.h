@@ -11,6 +11,7 @@ enum StmtNodeType {
     STMT_STRINGDECL,
     STMT_NUMDECL,
     STMT_CONDITIONAL,
+    STMT_WHILE,
     STMT_EXPR
 };
 
@@ -20,4 +21,5 @@ struct StmtNode {
     ExprNode* val;
 
     std::vector<StmtNode*> body;
+    std::vector<StmtNode*> elsebody;
 };

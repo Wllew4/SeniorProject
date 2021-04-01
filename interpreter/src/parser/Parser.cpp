@@ -1,6 +1,6 @@
 #include "parser/Parser.h"
 #include "parser/Lexer.h"
-#include "parser/Exec.h"
+#include "executor/Exec.h"
 #include "util/Log.h"
 #include "util/File.h"
 #include "util/Debug.h"
@@ -96,13 +96,19 @@ ExprNode* Parser::parseBinopExpr(){
 
 ExprNode* Parser::parseExpr(){
     ExprNode* expr = parseBinopExpr();
-    if(m_next.type == T_EQ){
+    if(m_next.type == T_EQ || m_next.type == T_LESSTHAN || m_next.type == T_GREATERTHAN){
+        char type;
+        switch(m_next.type){
+            case T_EQ: type = '='; break;
+            case T_LESSTHAN: type = '<'; break;
+            case T_GREATERTHAN: type = '>'; break;
+        }
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseExpr();
         expr = new ExprNode;
         expr->type = ExprNodeType::EXPR_BINOP;
-        expr->val.binop = {left, right, '='};
+        expr->val.binop = {left, right, type};
     }
     return expr;
 }
@@ -153,6 +159,30 @@ StmtNode* Parser::parseNode(){
         }
         case TokenType::T_IF: {
             node->type = StmtNodeType::STMT_CONDITIONAL;
+            parseNext();
+            ExprNode* expr = parseExpr();
+            if(m_next.type == TokenType::T_OPENBRACE){
+                node->val = expr;
+            }
+            else Log::MissingToken(TokenType::T_OPENBRACE);
+            parseNext();
+            while(m_next.type != T_CLOSEBRACE){
+                node->body.push_back(parseNode());
+                parseNext();
+            }
+            parseNext();
+            if(m_next.type == T_ELSE){
+                parseNext();
+                parseNext();
+                while(m_next.type != T_CLOSEBRACE){
+                    node->elsebody.push_back(parseNode());
+                    parseNext();
+                }
+            }
+            return node;
+        }
+        case TokenType::T_WHILE: {
+            node->type = StmtNodeType::STMT_WHILE;
             parseNext();
             ExprNode* expr = parseExpr();
             if(m_next.type == TokenType::T_OPENBRACE){

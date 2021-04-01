@@ -4,12 +4,10 @@
 
 class Num : public Object {
     protected:
-        double* m_value;
-        double* parseRvalue(ExprNode* node);
+        double m_value;
     public:
-        inline double* getValue() { return m_value; }
-        void setValue(double* x);
-        void setRvalue(ExprNode* node);
-        Num(const char* name, double* value) : Object(name), m_value(value) {}
+        double getValue();
+        void setValue(double x);
+        Num(const char* name, double value) : Object(name), m_value(value) {}
         std::string getString();
 };

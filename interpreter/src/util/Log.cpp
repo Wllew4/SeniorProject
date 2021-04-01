@@ -13,6 +13,8 @@ static const char* tokentypes[] = {
     "Plus",         "Minus",
     "Mult",         "Div",
     "Modulus",      "If",
+    "Else",         "While",
+    "LThan",        "GThan",
     "OpenBrace",    "CloseBrace",
     "Semicolon",    "EOF"
 };

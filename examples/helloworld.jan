@@ -1,7 +1,1 @@
-num a = 2 * 3;
-if a = 6 {
-    println a;
-    println a;
-}
-
-println "yo";
+println "Hello World!";

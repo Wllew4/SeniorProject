@@ -55,8 +55,14 @@ Token Lexer::getNextToken(){
             case '=':
                 m_position++;
                 return { TokenType::T_EQ, "=" };
+            case '<':
+                m_position++;
+                return { TokenType::T_LESSTHAN, "<" };
+            case '>':
+                m_position++;
+                return { TokenType::T_GREATERTHAN, ">" };
             case '/':
-                if(*m_position + 1 == '/'){
+                if(*(m_position + 1) == '/'){
                     while(*m_position != '\n') m_position++;
                 }
                 else{
@@ -116,6 +122,14 @@ Token Lexer::getNextToken(){
                     if(strcmp(value, "if") == 0){
                         m_position++;
                         return { TokenType::T_IF, value };
+                    }
+                    if(strcmp(value, "else") == 0){
+                        m_position++;
+                        return { TokenType::T_ELSE, value };
+                    }
+                    if(strcmp(value, "while") == 0){
+                        m_position++;
+                        return { TokenType::T_WHILE, value };
                     }
                     else {
                         return { TokenType::T_ID, value };
