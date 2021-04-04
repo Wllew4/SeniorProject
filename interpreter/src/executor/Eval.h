@@ -3,5 +3,5 @@
 #include "parser/ExprNode.h"
 
 namespace Eval {
-    double EvalNum(ExprNode* node);
+    double* EvalNum(ExprNode* node);
 };

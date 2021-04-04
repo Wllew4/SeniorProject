@@ -8,9 +8,6 @@
 
 ObjectBuffer ProgramBuffer;
 
-double* left;
-double* right;
-
 void Exec(StmtNode* statement){
 
     if(options[2]){
@@ -25,7 +22,7 @@ void Exec(StmtNode* statement){
                 std::cout << statement->val->val.string.value;
             }
             else if(statement->val->type == ExprNodeType::EXPR_NUM){
-                std::cout << statement->val->val.num.value;
+                std::cout << *statement->val->val.num.value;
             }
             else if(statement->val->type == ExprNodeType::EXPR_ID){
                 std::cout << ProgramBuffer.GetObjectByName(statement->val->val.id.name)->getString();
@@ -64,7 +61,7 @@ void Exec(StmtNode* statement){
         case StmtNodeType::STMT_CONDITIONAL:
             switch(statement->val->val.binop.op_type){
                 case '=':
-                    if(Eval::EvalNum(statement->val->val.binop.left) == Eval::EvalNum(statement->val->val.binop.right)){
+                    if(*Eval::EvalNum(statement->val->val.binop.left) == *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }
@@ -76,7 +73,7 @@ void Exec(StmtNode* statement){
                     }
                     break;
                 case '<':
-                    if(Eval::EvalNum(statement->val->val.binop.left) < Eval::EvalNum(statement->val->val.binop.right)){
+                    if(*Eval::EvalNum(statement->val->val.binop.left) < *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }
@@ -88,7 +85,7 @@ void Exec(StmtNode* statement){
                     }
                     break;
                 case '>':
-                    if(Eval::EvalNum(statement->val->val.binop.left) > Eval::EvalNum(statement->val->val.binop.right)){
+                    if(*Eval::EvalNum(statement->val->val.binop.left) > *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }
@@ -103,23 +100,24 @@ void Exec(StmtNode* statement){
             break;
 
         case StmtNodeType::STMT_WHILE:
+            
             switch(statement->val->val.binop.op_type){
                 case '=':
-                    while(Eval::EvalNum(statement->val->val.binop.left) == Eval::EvalNum(statement->val->val.binop.right)){
+                    while(*Eval::EvalNum(statement->val->val.binop.left) == *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }
                     }
                     break;
                 case '<':
-                    while(Eval::EvalNum(statement->val->val.binop.left) < Eval::EvalNum(statement->val->val.binop.right)){
+                    while(*Eval::EvalNum(statement->val->val.binop.left) < *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }
                     }
                     break;
                 case '>':
-                    while(Eval::EvalNum(statement->val->val.binop.left) > Eval::EvalNum(statement->val->val.binop.right)){
+                    while(*Eval::EvalNum(statement->val->val.binop.left) > *Eval::EvalNum(statement->val->val.binop.right)){
                         for(StmtNode* conditionals : statement->body){
                             Exec(conditionals);
                         }

@@ -20,6 +20,6 @@ class ObjectBuffer {
         Num* GetNumByName(const char* name);
         String* GetStringByName(const char* name);
         ObjectType GetObjectType(const char* name);
-        void AddNum(const char* name, double value);
+        void AddNum(const char* name, double* value);
         void AddString(const char* name, const char* value);
 };

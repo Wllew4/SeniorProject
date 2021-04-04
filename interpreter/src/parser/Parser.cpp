@@ -38,7 +38,7 @@ ExprNode* Parser::parseAtomicExpr(){
         case TokenType::T_NUM: {
             ExprNode* numexpr = new ExprNode;
             numexpr->type = ExprNodeType::EXPR_NUM;
-            numexpr->val.num.value = atof(m_current.value);
+            numexpr->val.num.value = new double(atof(m_current.value));
             return numexpr;
         }
         case TokenType::T_STRING: {

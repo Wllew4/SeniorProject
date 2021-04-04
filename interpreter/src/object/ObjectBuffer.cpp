@@ -57,7 +57,7 @@ ObjectType ObjectBuffer::GetObjectType(const char* name){
     exit(0);
 }
 
-void ObjectBuffer::AddNum(const char* name, double value){
+void ObjectBuffer::AddNum(const char* name, double* value){
     numbuffer.push_back(new Num(name, value));
 }
 

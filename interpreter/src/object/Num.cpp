@@ -9,13 +9,14 @@
 extern ObjectBuffer ProgramBuffer;
 
 std::string Num::getString(){
-    return std::to_string(this->getValue());
+    return std::to_string(*this->getValue());
 }
 
-void Num::setValue(double x){
+void Num::setValue(double* x){
+    delete m_value;
     m_value = x;
 }
 
-double Num::getValue(){
+double* Num::getValue(){
     return m_value;
 }
