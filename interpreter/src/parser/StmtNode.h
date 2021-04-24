@@ -12,7 +12,8 @@ enum StmtNodeType {
     STMT_NUMDECL,
     STMT_CONDITIONAL,
     STMT_WHILE,
-    STMT_EXPR
+    STMT_EXPR,
+    STMT_SCOPE
 };
 
 struct StmtNode {

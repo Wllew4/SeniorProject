@@ -137,5 +137,11 @@ void Exec(StmtNode* statement){
                     break;
             }
             break;
+
+        case StmtNodeType::STMT_SCOPE:
+            for(StmtNode* node : statement->body){
+                Exec(node);
+            }
+            break;
     }
 }

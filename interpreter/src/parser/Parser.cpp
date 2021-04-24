@@ -161,23 +161,12 @@ StmtNode* Parser::parseNode(){
             node->type = StmtNodeType::STMT_CONDITIONAL;
             parseNext();
             ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_OPENBRACE){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_OPENBRACE);
-            parseNext();
-            while(m_next.type != T_CLOSEBRACE){
-                node->body.push_back(parseNode());
-                parseNext();
-            }
+            node->val = expr;
+            node->body.push_back(parseNode());
             parseNext();
             if(m_next.type == T_ELSE){
                 parseNext();
-                parseNext();
-                while(m_next.type != T_CLOSEBRACE){
-                    node->elsebody.push_back(parseNode());
-                    parseNext();
-                }
+                node->elsebody.push_back(parseNode());
             }
             return node;
         }
@@ -185,10 +174,13 @@ StmtNode* Parser::parseNode(){
             node->type = StmtNodeType::STMT_WHILE;
             parseNext();
             ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_OPENBRACE){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_OPENBRACE);
+            node->val = expr;
+            node->body.push_back(parseNode());
+            parseNext();
+            return node;
+        }
+        case TokenType::T_OPENBRACE: {
+            node->type = StmtNodeType::STMT_SCOPE;
             parseNext();
             while(m_next.type != T_CLOSEBRACE){
                 node->body.push_back(parseNode());

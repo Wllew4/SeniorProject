@@ -9,13 +9,11 @@ while i < 101 {
             println "Fizz";
         }
     }
+    else if i % 5 = 0 {
+        println "Buzz";
+    }
     else {
-        if i % 5 = 0 {
-            println "Buzz";
-        }
-        else {
-            println i;
-        }
+        println i;
     }
 
     i = i + 1;
