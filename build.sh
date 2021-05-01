@@ -1,5 +1,5 @@
-sourcefile=examples/helloworld.jan
-flags=--debug-printtokens
+sourcefile=examples/FizzBuzz.jan
+#flags=--debug-printtokens
 
 output=interpreter/bin/janelle.exe
 includepaths=interpreter/src

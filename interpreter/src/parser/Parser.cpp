@@ -16,7 +16,7 @@ void Parser::parseNext(){
 }
 
 void Parser::parse(char* file){
-    Lexer::Init(File::readFile(file));
+    Lexer::Init(file);
     parseNext();
     while(m_next.type != TokenType::T_EOF){
         StmtNode* statement = parseNode();

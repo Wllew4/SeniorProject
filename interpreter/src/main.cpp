@@ -10,14 +10,13 @@
 
 #include <string>
 
-#include "util/Log.h"
 #include "util/Debug.h"
-#include "parser/Parser.h"
+#include "program/Program.h"
 
 int main(int argc, char** argv){
     setbuf(stdout, NULL);
     
     parseArgs(argc, argv);
 
-    Parser::parse(argv[1]);
+    Program program (argv[1]);
 }
