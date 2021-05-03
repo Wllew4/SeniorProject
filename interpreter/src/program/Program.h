@@ -1,15 +1,16 @@
 #pragma once
 
-#include <vector>
-#include "object/ObjectBuffer.h"
 #include "program/File.h"
+#include "object/PrimitivesBuffer.h"
 
 class Program {
 	private:
-		std::vector<Primitive*> PrimitivesBuffer;
+		PrimitiveBuffer objbuffer;
 		File mainFile;
 
 	public:
 		void execute(char* main);
-		std::vector<Primitive*>* GetBuffer();
+		PrimitiveBuffer* GetBuffer();
 };
+
+extern Program program;

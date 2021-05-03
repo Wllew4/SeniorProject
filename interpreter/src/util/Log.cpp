@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 
-static const char* tokentypes[] = {
+const char* tokentypes[] = {
     "StringDecl",   "NumDecl",
     "String",       "Number",
     "ID",           "Print",
@@ -19,10 +19,16 @@ static const char* tokentypes[] = {
     "Semicolon",    "EOF"
 };
 
+const char* primitivetypes[] = {
+    "num",
+    "string",
+    "bool"
+};
+
 void Log::Error(int size, ...){
     va_list args;
     va_start(args, size);
-    std::cout << "\u001b[31mJANELLE:\tError:\t\033[0m";
+    std::cout << "\u001b[31mJANELLE:\tError:\t\033[0m\tLine " << Lexer::getLine() << ": ";
     for(int i = 0; i < size; i++){
         std::cout << va_arg(args, const char*);
     }
@@ -67,4 +73,9 @@ void Log::UnrecognizedIdentifier(const char* value){
 
 void Log::RedefinedIdentifier(const char* value){
     Log::Error(4, "Redefined Identifier on line ", Lexer::getLine(), ": ", value);
+}
+
+void Log::CannotImplicitlyConvert(const TYPE_PRIMITIVE& l, const TYPE_PRIMITIVE& r)
+{
+    Log::Error(5, "Cannot implicitly convert object of type ", primitivetypes[l], " to ", primitivetypes[r], ".");
 }

@@ -5,6 +5,6 @@ void Program::execute(char* main){
   mainFile.execute();
 }
 
-std::vector<Primitive*>* Program::GetBuffer(){
-	return &PrimitivesBuffer;
+PrimitiveBuffer* Program::GetBuffer(){
+	return &objbuffer;
 }
