@@ -6,11 +6,10 @@
 
 class Program {
 	private:
-		std::vector<ObjectBuffer*> ObjectBufferBuffer;
+		std::vector<Primitive*> PrimitivesBuffer;
 		File mainFile;
 
 	public:
-		Program(char* main);
-		int AppendBuffer();
-		void RemoveBuffer(int index);
+		void execute(char* main);
+		std::vector<Primitive*>* GetBuffer();
 };

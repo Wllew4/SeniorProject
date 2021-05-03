@@ -13,10 +13,12 @@
 #include "util/Debug.h"
 #include "program/Program.h"
 
+Program program;
+
 int main(int argc, char** argv){
     setbuf(stdout, NULL);
     
     parseArgs(argc, argv);
 
-    Program program (argv[1]);
+    program.execute(argv[1]);
 }
