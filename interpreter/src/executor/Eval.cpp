@@ -3,6 +3,7 @@
 #include "util/Log.h"
 #include <string>
 #include <string.h>
+#include <iostream>
 
 double* Eval::EvalNumExpr(ExprNode* node)
 {
@@ -40,7 +41,9 @@ double* Eval::EvalNumExpr(ExprNode* node)
                 *result = *EvalNumExpr(&left) / *EvalNumExpr(&right);
                 break;
             case '%':
+                //std::cout << "ranmodulus";
                 *result = modulus(*EvalNumExpr(&left), *EvalNumExpr(&right));
+                //std::cout << *result << std::endl;
                 break;
         }
     }
@@ -59,6 +62,7 @@ double* Eval::EvalNumExpr(ExprNode* node)
     else
     {
         *result = *node->val.num.value;
+        //std::cout << *result << "|";
     }
     return result;
 }

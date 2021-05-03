@@ -59,7 +59,7 @@ void Exec(StmtNode* statement){
             break;
 
         case StmtNodeType::STMT_CONDITIONAL:
-            if(Eval::EvalBoolExpr(statement->val)){
+            if(*Eval::EvalBoolExpr(statement->val)){
                 for(StmtNode* conditionals : statement->body){
                     Exec(conditionals);
                 }
@@ -69,75 +69,14 @@ void Exec(StmtNode* statement){
                     Exec(conditionals);
                 }
             }
-            // switch(statement->val->val.binop.op_type){
-            //     case '=':
-            //         if(*Eval::EvalNum(statement->val->val.binop.left) == *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         else {
-            //             for(StmtNode* conditionals : statement->elsebody){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            //     case '<':
-            //         if(*Eval::EvalNum(statement->val->val.binop.left) < *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         else {
-            //             for(StmtNode* conditionals : statement->elsebody){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            //     case '>':
-            //         if(*Eval::EvalNum(statement->val->val.binop.left) > *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         else {
-            //             for(StmtNode* conditionals : statement->elsebody){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            // }
             break;
 
         case StmtNodeType::STMT_WHILE:
-            while(Eval::EvalBoolExpr(statement->val)){
+            while(*Eval::EvalBoolExpr(statement->val)){
                 for(StmtNode* conditionals : statement->body){
                     Exec(conditionals);
                 }
             }
-            // switch(statement->val->val.binop.op_type){
-            //     case '=':
-            //         while(*Eval::EvalNum(statement->val->val.binop.left) == *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            //     case '<':
-            //         while(*Eval::EvalNum(statement->val->val.binop.left) < *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            //     case '>':
-            //         while(*Eval::EvalNum(statement->val->val.binop.left) > *Eval::EvalNum(statement->val->val.binop.right)){
-            //             for(StmtNode* conditionals : statement->body){
-            //                 Exec(conditionals);
-            //             }
-            //         }
-            //         break;
-            // }
             break;
 
         //Expression Statements

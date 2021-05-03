@@ -28,7 +28,7 @@ const char* primitivetypes[] = {
 void Log::Error(int size, ...){
     va_list args;
     va_start(args, size);
-    std::cout << "\u001b[31mJANELLE:\tError:\t\033[0m\tLine " << Lexer::getLine() << ": ";
+    std::cout << "\u001b[31mJANELLE:\tError:\t\033[0m";
     for(int i = 0; i < size; i++){
         std::cout << va_arg(args, const char*);
     }

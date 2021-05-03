@@ -2,6 +2,7 @@
 #include "util/Log.h"
 #include <algorithm>
 #include <string.h>
+#include <iostream>
 
 Primitive* PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double* n, const char* name)
 {
@@ -64,6 +65,6 @@ Primitive* PrimitiveBuffer::GetByName(const char* name)
 		if(strcmp(item->getName(), name) == 0)
 			return item;
 	
-	Log::UnrecognizedIdentifier(name);
+	//Log::UnrecognizedIdentifier(name);
 	return nullptr;
 }
