@@ -10,19 +10,19 @@ PrimitiveBuffer::PrimitiveBuffer()
 	buffer.resize(1);
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double n, const char* name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double n, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, n, name);
+	buffer.at(currentScope).emplace_back(type, n, name.c_str());
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, const char* name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, s, name);
+	buffer.at(currentScope).emplace_back(type, s, name.c_str());
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, bool b, const char* name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, bool b, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, b, name);
+	buffer.at(currentScope).emplace_back(type, b, name.c_str());
 }
 
 // void PrimitiveBuffer::RemovePrimitive(Primitive* item)
@@ -71,11 +71,11 @@ void PrimitiveBuffer::DescreaseScope()
 	currentScope--;
 }
 
-Primitive* PrimitiveBuffer::GetByName(const char* name)
+Primitive* PrimitiveBuffer::GetByName(std::string& name)
 {
 	for(int i = 0; i < buffer.size(); i++)
 		for(int j = 0; j < buffer.at(i).size(); j++)
-			if(strcmp(buffer.at(i).at(j).getName(), name) == 0)
+			if(buffer.at(i).at(j).getName() == name)
 				return &buffer.at(i).at(j);
 
 	//Log::UnrecognizedIdentifier(name);

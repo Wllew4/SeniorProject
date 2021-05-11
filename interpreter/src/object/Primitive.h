@@ -20,7 +20,7 @@ class Primitive {
 	private:
 		const TYPE_PRIMITIVE* m_type;
 		Data m_data;
-		const char* m_name;
+		std::string m_name;
 	public:
 		Primitive(const TYPE_PRIMITIVE* type, double n, 	const char* name);
 		Primitive(const TYPE_PRIMITIVE* type, const char* s,const char* name);
@@ -31,9 +31,9 @@ class Primitive {
 		double asNum();
 		bool asBool();
 		void setValue(double val);
-		void setValue(const char* val);
+		void setValue(std::string val);
 		void setValue(bool val);
-		const char* getName();
+		std::string& getName();
 		const TYPE_PRIMITIVE* getType();
 		Data& getData();
 };

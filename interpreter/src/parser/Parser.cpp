@@ -8,6 +8,7 @@
 #include <iostream>
 
 void Parser::parseNext(){
+    //delete m_current.value;
     m_current = m_next;
     m_next = Lexer::getNextToken();
     if(options[1]){
@@ -32,19 +33,20 @@ ExprNode* Parser::parseAtomicExpr(){
         case TokenType::T_ID: {
             ExprNode* idexpr = new ExprNode;
             idexpr->type = ExprNodeType::EXPR_ID;
-            idexpr->val.id.name = m_current.value;
+            idexpr->val.id = m_current.value;
             return idexpr;
         }
         case TokenType::T_NUM: {
             ExprNode* numexpr = new ExprNode;
             numexpr->type = ExprNodeType::EXPR_NUM;
-            numexpr->val.num.value = atof(m_current.value);
+            numexpr->val.num = atof(m_current.value);
+            free((void*)m_current.value);
             return numexpr;
         }
         case TokenType::T_STRING: {
             ExprNode* stringexpr = new ExprNode;
             stringexpr->type = ExprNodeType::EXPR_STRING;
-            stringexpr->val.string.value = m_current.value;
+            stringexpr->val.string = m_current.value;
             return stringexpr;
         }
         default:

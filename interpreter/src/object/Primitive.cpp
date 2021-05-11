@@ -40,7 +40,6 @@ Primitive::Primitive(const Primitive& r)
 Primitive::~Primitive()
 {
 	delete m_type;
-	delete m_name;
 }
 
 double Primitive::asNum()
@@ -66,10 +65,9 @@ void Primitive::setValue(double val)
 	m_data.num = val;
 }
 
-void Primitive::setValue(const char* val)
+void Primitive::setValue(std::string val)
 {
 	m_data.string = val;
-	delete val;
 }
 
 void Primitive::setValue(bool val)
@@ -77,7 +75,7 @@ void Primitive::setValue(bool val)
 	m_data.boolean = val;
 }
 
-const char* Primitive::getName()
+std::string& Primitive::getName()
 {
 	return m_name;
 }

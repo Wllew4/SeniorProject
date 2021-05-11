@@ -6,7 +6,7 @@
 
 namespace Eval {
     double      EvalNumExpr     (ExprNode* node);
-    const char* EvalStringExpr  (ExprNode* node);
+    std::string EvalStringExpr  (ExprNode* node);
     bool        EvalBoolExpr    (ExprNode* node);
 
     const char* toString        (Primitive* val);

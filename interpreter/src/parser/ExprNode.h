@@ -1,6 +1,7 @@
 #pragma once
 
 #include "parser/Token.h"
+#include <string>
 
 enum ExprNodeType {
     EXPR_NUM,
@@ -13,18 +14,12 @@ enum ExprNodeType {
 struct ExprNode {
     ExprNodeType type;
 
-    union {
-        struct {
-            double value;
-        } num;
+    union val{
+        double num;
 
-        struct {
-            const char* value;
-        } string;
+        std::string string;
 
-        struct {
-            const char* name;
-        } id;
+        std::string id;
 
         struct {
             ExprNode* left;
@@ -36,5 +31,29 @@ struct ExprNode {
             ExprNode* left;
             char op_type;
         } unop;
+
+        val(){}
+        ~val(){}
+        val(const val& r){}
     } val;
+
+    void operator=(const ExprNode& r){
+        switch(r.type){
+            case ExprNodeType::EXPR_NUM:
+                val.num = r.val.num;
+                break;
+            case ExprNodeType::EXPR_STRING:
+                val.string = r.val.string;
+                break;
+            case ExprNodeType::EXPR_ID:
+                val.id = r.val.id;
+                break;
+            case ExprNodeType::EXPR_BINOP:
+                val.binop = r.val.binop;
+                break;
+            case ExprNodeType::EXPR_UNOP:
+                val.unop = r.val.unop;
+                break;
+        }
+    }
 };

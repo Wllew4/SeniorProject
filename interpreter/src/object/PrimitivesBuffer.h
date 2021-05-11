@@ -8,10 +8,10 @@ class PrimitiveBuffer {
 		int currentScope;
 	public:
 		PrimitiveBuffer();
-		void AddPrimitive(const TYPE_PRIMITIVE* type, double n, const char* name);
-		void AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, const char* name);
-		void AddPrimitive(const TYPE_PRIMITIVE* type, bool b, const char* name);
+		void AddPrimitive(const TYPE_PRIMITIVE* type, double n, std::string& name);
+		void AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, std::string& name);
+		void AddPrimitive(const TYPE_PRIMITIVE* type, bool b, std::string& name);
 		void IncreaseScope();
 		void DescreaseScope();
-		Primitive* GetByName(const char* name);
+		Primitive* GetByName(std::string& name);
 };

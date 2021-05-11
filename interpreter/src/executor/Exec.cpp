@@ -18,13 +18,13 @@ void Exec(StmtNode* statement){
         case StmtNodeType::STMT_PRINT:
         case StmtNodeType::STMT_PRINTLN:
             if(statement->val->type == ExprNodeType::EXPR_STRING){
-                std::cout << statement->val->val.string.value;
+                std::cout << statement->val->val.string;
             }
             else if(statement->val->type == ExprNodeType::EXPR_NUM){
-                std::cout << statement->val->val.num.value;
+                std::cout << statement->val->val.num;
             }
             else if(statement->val->type == ExprNodeType::EXPR_ID){
-                std::cout << buffer->GetByName(statement->val->val.id.name)->asString();
+                std::cout << buffer->GetByName(statement->val->val.id)->asString();
             }
 
             if(statement->type == StmtNodeType::STMT_PRINTLN){ std::cout << std::endl; }
@@ -32,29 +32,29 @@ void Exec(StmtNode* statement){
         
         //Number Declaration
         case StmtNodeType::STMT_NUMDECL:
-            if(buffer->GetByName(statement->val->val.id.name) != nullptr){
-                Log::RedefinedIdentifier(statement->val->val.id.name);
+            if(buffer->GetByName(statement->val->val.id) != nullptr){
+                Log::RedefinedIdentifier(statement->val->val.id.c_str());
                 exit(0);
             }
             if(statement->val->type == ExprNodeType::EXPR_ID){
-                buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), new double (0), statement->val->val.id.name);
+                buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), new double (0), statement->val->val.id);
                 break;
             }
-            buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), Eval::EvalNumExpr(statement->val->val.binop.right), statement->val->val.binop.left->val.id.name);
+            buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), Eval::EvalNumExpr(statement->val->val.binop.right), statement->val->val.binop.left->val.id);
             break;
 
         //String Declaration
         case StmtNodeType::STMT_STRINGDECL:
-            if(buffer->GetByName(statement->val->val.id.name) != nullptr){
-                Log::RedefinedIdentifier(statement->val->val.id.name);
+            if(buffer->GetByName(statement->val->val.id) != nullptr){
+                Log::RedefinedIdentifier(statement->val->val.id.c_str());
                 exit(0);
             }
             if(statement->val->type == ExprNodeType::EXPR_ID){
-                buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), statement->val->val.id.name);
+                buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), statement->val->val.id);
                 break;
             }
-            buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), statement->val->val.binop.left->val.id.name);
-            buffer->GetByName(statement->val->val.binop.left->val.id.name)->setValue(Eval::EvalStringExpr(statement->val->val.binop.right));
+            buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), statement->val->val.binop.left->val.id);
+            buffer->GetByName(statement->val->val.binop.left->val.id)->setValue(Eval::EvalStringExpr(statement->val->val.binop.right));
             break;
 
         case StmtNodeType::STMT_CONDITIONAL:
@@ -74,12 +74,12 @@ void Exec(StmtNode* statement){
 
         //Expression Statements
         case StmtNodeType::STMT_EXPR:
-            switch(*buffer->GetByName(statement->val->val.binop.left->val.id.name)->getType()){
+            switch(*buffer->GetByName(statement->val->val.binop.left->val.id)->getType()){
                 case TYPE_PRIMITIVE::TYPE_NUM:
-                    buffer->GetByName(statement->val->val.binop.left->val.id.name)->setValue(Eval::EvalNumExpr(statement->val->val.binop.right));
+                    buffer->GetByName(statement->val->val.binop.left->val.id)->setValue(Eval::EvalNumExpr(statement->val->val.binop.right));
                     break;
                 case TYPE_PRIMITIVE::TYPE_STRING:
-                    buffer->GetByName(statement->val->val.binop.left->val.id.name)->setValue(statement->val->val.binop.right->val.string.value);
+                    buffer->GetByName(statement->val->val.binop.left->val.id)->setValue(statement->val->val.binop.right->val.string);
                     break;
             }
             break;

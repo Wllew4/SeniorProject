@@ -15,14 +15,14 @@ double Eval::EvalNumExpr(ExprNode* node)
         if(node->val.binop.left->type == ExprNodeType::EXPR_ID)
         {
             left.type = ExprNodeType::EXPR_NUM;
-            left.val.num.value = buffer->GetByName(node->val.binop.left->val.id.name)->asNum();
-        } 
+            left.val.num = buffer->GetByName(node->val.binop.left->val.id)->asNum();
+        }
         else left = *node->val.binop.left;
 
         if(node->val.binop.right->type == ExprNodeType::EXPR_ID)
         {
             right.type = ExprNodeType::EXPR_NUM;
-            right.val.num.value = buffer->GetByName(node->val.binop.right->val.id.name)->asNum();
+            right.val.num = buffer->GetByName(node->val.binop.right->val.id)->asNum();
         }
         else right = *node->val.binop.right;
         
@@ -50,36 +50,36 @@ double Eval::EvalNumExpr(ExprNode* node)
     else if(node->type == ExprNodeType::EXPR_UNOP)
     {
         left.type = ExprNodeType::EXPR_NUM;
-        left.val.num.value = -buffer->GetByName(node->val.id.name)->asNum();
-        result = left.val.num.value;
+        left.val.num = -buffer->GetByName(node->val.id)->asNum();
+        result = left.val.num;
     }
     else if(node->type == ExprNodeType::EXPR_ID)
     {
         left.type = ExprNodeType::EXPR_NUM;
-        left.val.num.value = buffer->GetByName(node->val.id.name)->asNum();
-        result = left.val.num.value;
+        left.val.num = buffer->GetByName(node->val.id)->asNum();
+        result = left.val.num;
     }
     else
     {
-        result = node->val.num.value;
+        result = node->val.num;
     }
     return result;
 }
 
-const char* Eval::EvalStringExpr(ExprNode* node)
+std::string Eval::EvalStringExpr(ExprNode* node)
 {
-    const char* result;
+    std::string result;
     if(node->type == ExprNodeType::EXPR_BINOP)
     {
         if(node->val.binop.left->type == ExprNodeType::EXPR_ID)
         {
             node->val.binop.left->type = ExprNodeType::EXPR_STRING;
-            node->val.binop.left->val.string.value = buffer->GetByName(node->val.binop.left->val.id.name)->asString();
+            node->val.binop.left->val.string = buffer->GetByName(node->val.binop.left->val.id)->asString();
         }
         if(node->val.binop.right->type == ExprNodeType::EXPR_ID)
         {
             node->val.binop.right->type = ExprNodeType::EXPR_STRING;
-            node->val.binop.right->val.string.value = buffer->GetByName(node->val.binop.right->val.id.name)->asString();
+            node->val.binop.right->val.string = buffer->GetByName(node->val.binop.right->val.id)->asString();
         }
         if(node->val.binop.op_type == '+')
         {
@@ -96,9 +96,9 @@ const char* Eval::EvalStringExpr(ExprNode* node)
         if(node->type == ExprNodeType::EXPR_ID)
         {
             node->type = ExprNodeType::EXPR_STRING;
-            node->val.string.value = buffer->GetByName(node->val.string.value)->asString();
+            node->val.string = buffer->GetByName(node->val.string)->asString();
         }
-        result = node->val.string.value;
+        result = node->val.string;
     }
 
     return result;
