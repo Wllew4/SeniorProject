@@ -13,7 +13,6 @@ void Exec(StmtNode* statement){
     if(options[2]){
         Log::PrintStatement(statement->type);
     }
-
     switch(statement->type){
         //  Printing
         case StmtNodeType::STMT_PRINT:
@@ -22,7 +21,7 @@ void Exec(StmtNode* statement){
                 std::cout << statement->val->val.string.value;
             }
             else if(statement->val->type == ExprNodeType::EXPR_NUM){
-                std::cout << *statement->val->val.num.value;
+                std::cout << statement->val->val.num.value;
             }
             else if(statement->val->type == ExprNodeType::EXPR_ID){
                 std::cout << buffer->GetByName(statement->val->val.id.name)->asString();
@@ -59,23 +58,17 @@ void Exec(StmtNode* statement){
             break;
 
         case StmtNodeType::STMT_CONDITIONAL:
-            if(*Eval::EvalBoolExpr(statement->val)){
-                for(StmtNode* conditionals : statement->body){
-                    Exec(conditionals);
-                }
+            if(Eval::EvalBoolExpr(statement->val)){
+                Exec(statement->body);
             }
             else {
-                for(StmtNode* conditionals : statement->elsebody){
-                    Exec(conditionals);
-                }
+                Exec(statement->elsebody);
             }
             break;
 
         case StmtNodeType::STMT_WHILE:
-            while(*Eval::EvalBoolExpr(statement->val)){
-                for(StmtNode* conditionals : statement->body){
-                    Exec(conditionals);
-                }
+            while(Eval::EvalBoolExpr(statement->val)){
+                Exec(statement->body);
             }
             break;
 
@@ -92,9 +85,9 @@ void Exec(StmtNode* statement){
             break;
 
         case StmtNodeType::STMT_SCOPE:
-            for(StmtNode* node : statement->body){
-                Exec(node);
-            }
+            buffer->IncreaseScope();
+            for(auto i : statement->scope) Exec(i);
+            buffer->DescreaseScope();
             break;
     }
 }

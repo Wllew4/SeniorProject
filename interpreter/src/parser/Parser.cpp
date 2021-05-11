@@ -38,7 +38,7 @@ ExprNode* Parser::parseAtomicExpr(){
         case TokenType::T_NUM: {
             ExprNode* numexpr = new ExprNode;
             numexpr->type = ExprNodeType::EXPR_NUM;
-            numexpr->val.num.value = new double(atof(m_current.value));
+            numexpr->val.num.value = atof(m_current.value);
             return numexpr;
         }
         case TokenType::T_STRING: {
@@ -162,11 +162,11 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             node->val = expr;
-            node->body.push_back(parseNode());
+            node->body = parseNode();
             parseNext();
             if(m_next.type == T_ELSE){
                 parseNext();
-                node->elsebody.push_back(parseNode());
+                node->elsebody = parseNode();
             }
             return node;
         }
@@ -175,15 +175,15 @@ StmtNode* Parser::parseNode(){
             parseNext();
             ExprNode* expr = parseExpr();
             node->val = expr;
-            node->body.push_back(parseNode());
-            parseNext();
+            node->body = parseNode();
+            //parseNext();
             return node;
         }
         case TokenType::T_OPENBRACE: {
             node->type = StmtNodeType::STMT_SCOPE;
             parseNext();
             while(m_next.type != T_CLOSEBRACE){
-                node->body.push_back(parseNode());
+                node->scope.push_back(parseNode());
                 parseNext();
             }
             return node;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum TYPE_PRIMITIVE {
 	TYPE_NUM,
 	TYPE_STRING,
@@ -7,9 +9,11 @@ enum TYPE_PRIMITIVE {
 };
 
 union Data {
-	double* num;
-	const char* string;
-	bool* boolean;
+	Data(){}
+	~Data(){}
+	double num;
+	std::string string;
+	bool boolean;
 };
 
 class Primitive {
@@ -18,17 +22,18 @@ class Primitive {
 		Data m_data;
 		const char* m_name;
 	public:
-		Primitive(const TYPE_PRIMITIVE* type, double* n, const char* name);
-		Primitive(const TYPE_PRIMITIVE* type, const char* s, const char* name);
-		Primitive(const TYPE_PRIMITIVE* type, bool* b, const char* name);
+		Primitive(const TYPE_PRIMITIVE* type, double n, 	const char* name);
+		Primitive(const TYPE_PRIMITIVE* type, const char* s,const char* name);
+		Primitive(const TYPE_PRIMITIVE* type, bool b, 		const char* name);
+		Primitive(const Primitive& r);
 		~Primitive();
 		const char* asString();
-		double* asNum();
-		bool* asBool();
-		void setValue(double* val);
+		double asNum();
+		bool asBool();
+		void setValue(double val);
 		void setValue(const char* val);
-		void setValue(bool* val);
+		void setValue(bool val);
 		const char* getName();
 		const TYPE_PRIMITIVE* getType();
-		Data* getData();
+		Data& getData();
 };

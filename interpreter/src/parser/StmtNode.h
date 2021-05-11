@@ -21,6 +21,8 @@ struct StmtNode {
 
     ExprNode* val;
 
-    std::vector<StmtNode*> body;
-    std::vector<StmtNode*> elsebody;
+    StmtNode* body;
+    StmtNode* elsebody;
+
+    std::vector<StmtNode*> scope;
 };

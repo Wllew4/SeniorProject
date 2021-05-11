@@ -5,12 +5,12 @@
 #include "program/Program.h"
 
 namespace Eval {
-    double*     EvalNumExpr     (ExprNode* node);
+    double      EvalNumExpr     (ExprNode* node);
     const char* EvalStringExpr  (ExprNode* node);
-    bool*       EvalBoolExpr    (ExprNode* node);
+    bool        EvalBoolExpr    (ExprNode* node);
 
     const char* toString        (Primitive* val);
-    bool*       toBool          (Primitive* val);
+    bool        toBool          (Primitive* val);
 
     namespace {
         PrimitiveBuffer* buffer = program.GetBuffer();

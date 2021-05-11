@@ -3,11 +3,11 @@
 #include "util/Log.h"
 #include <string>
 #include <string.h>
-#include <iostream>
 
-double* Eval::EvalNumExpr(ExprNode* node)
+double Eval::EvalNumExpr(ExprNode* node)
 {
-    double* result = new double;
+    
+    double result;
     ExprNode left;
     ExprNode right;
     if(node->type == ExprNodeType::EXPR_BINOP)
@@ -29,20 +29,20 @@ double* Eval::EvalNumExpr(ExprNode* node)
         switch(node->val.binop.op_type)
         {
             case '+':
-                *result = *EvalNumExpr(&left) + *EvalNumExpr(&right);
+                result = EvalNumExpr(&left) + EvalNumExpr(&right);
                 break;
             case '-':
-                *result = *EvalNumExpr(&left) - *EvalNumExpr(&right);
+                result = EvalNumExpr(&left) - EvalNumExpr(&right);
                 break;
             case '*':
-                *result = *EvalNumExpr(&left) * *EvalNumExpr(&right);
+                result = EvalNumExpr(&left) * EvalNumExpr(&right);
                 break;
             case '/':
-                *result = *EvalNumExpr(&left) / *EvalNumExpr(&right);
+                result = EvalNumExpr(&left) / EvalNumExpr(&right);
                 break;
             case '%':
                 //std::cout << "ranmodulus";
-                *result = modulus(*EvalNumExpr(&left), *EvalNumExpr(&right));
+                result = modulus(EvalNumExpr(&left), EvalNumExpr(&right));
                 //std::cout << *result << std::endl;
                 break;
         }
@@ -50,19 +50,18 @@ double* Eval::EvalNumExpr(ExprNode* node)
     else if(node->type == ExprNodeType::EXPR_UNOP)
     {
         left.type = ExprNodeType::EXPR_NUM;
-        *left.val.num.value = -*buffer->GetByName(node->val.id.name)->asNum();
-        *result = *left.val.num.value;
+        left.val.num.value = -buffer->GetByName(node->val.id.name)->asNum();
+        result = left.val.num.value;
     }
     else if(node->type == ExprNodeType::EXPR_ID)
     {
         left.type = ExprNodeType::EXPR_NUM;
         left.val.num.value = buffer->GetByName(node->val.id.name)->asNum();
-        *result = *left.val.num.value;
+        result = left.val.num.value;
     }
     else
     {
-        *result = *node->val.num.value;
-        //std::cout << *result << "|";
+        result = node->val.num.value;
     }
     return result;
 }
@@ -111,7 +110,7 @@ const char* Eval::EvalStringExpr(ExprNode* node)
 // }
 
 // uhhhhh
-bool* Eval::EvalBoolExpr(ExprNode* node)
+bool Eval::EvalBoolExpr(ExprNode* node)
 {
     // bool* result;
     // TYPE_PRIMITIVE exprtype = getExprType();
@@ -124,31 +123,31 @@ bool* Eval::EvalBoolExpr(ExprNode* node)
 
     switch(node->val.binop.op_type){
         case '=':
-            if(*Eval::EvalNumExpr(node->val.binop.left) == *Eval::EvalNumExpr(node->val.binop.right)){
-                return new bool (true);
+            if(Eval::EvalNumExpr(node->val.binop.left) == Eval::EvalNumExpr(node->val.binop.right)){
+                return true;
             }
             else {
-                return new bool (false);
+                return false;
             }
             break;
         case '<':
-            if(*Eval::EvalNumExpr(node->val.binop.left) < *Eval::EvalNumExpr(node->val.binop.right)){
-                return new bool (true);
+            if(Eval::EvalNumExpr(node->val.binop.left) < Eval::EvalNumExpr(node->val.binop.right)){
+                return true;
             }
             else {
-                return new bool (false);
+                return false;
             }
             break;
         case '>':
-            if(*Eval::EvalNumExpr(node->val.binop.left) > *Eval::EvalNumExpr(node->val.binop.right)){
-                return new bool (true);
+            if(Eval::EvalNumExpr(node->val.binop.left) > Eval::EvalNumExpr(node->val.binop.right)){
+                return true;
             }
             else {
-                return new bool (false);
+                return false;
             }
             break;
     }
-    return new bool (false);
+    return false;
 }
 
 //  Save for later
@@ -156,27 +155,27 @@ const char* Eval::toString(Primitive* val)
 {
     switch(*val->getType()){
         case TYPE_PRIMITIVE::TYPE_STRING:
-            return val->getData()->string;
+            return val->getData().string.c_str();
         case TYPE_PRIMITIVE::TYPE_NUM:
-            return std::to_string(*val->getData()->num).c_str();
+            return std::to_string(val->getData().num).c_str();
         case TYPE_PRIMITIVE::TYPE_BOOL:
-            if(*val->getData()->boolean) return "true";
+            if(val->getData().boolean) return "true";
             else return "false";
     }
     return nullptr;
 }
 
-bool* Eval::toBool(Primitive* val)
+bool Eval::toBool(Primitive* val)
 {
     switch(*val->getType()){
         case TYPE_PRIMITIVE::TYPE_STRING:
-            if(strcmp(val->getData()->string, "") == 0) return new bool (false);
-            else return new bool (true);
+            if(strcmp(val->getData().string.c_str(), "") == 0) return false;
+            else return true;
         case TYPE_PRIMITIVE::TYPE_NUM:
-            if(*val->getData()->num) return new bool (true);
-            else return new bool (false);
+            if(val->getData().num) return true;
+            else return false;
         case TYPE_PRIMITIVE::TYPE_BOOL:
-            return val->getData()->boolean;
+            return val->getData().boolean;
     }
-    return nullptr;
+    return false;
 }

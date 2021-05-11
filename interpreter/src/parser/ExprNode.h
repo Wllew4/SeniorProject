@@ -15,7 +15,7 @@ struct ExprNode {
 
     union {
         struct {
-            double* value;
+            double value;
         } num;
 
         struct {

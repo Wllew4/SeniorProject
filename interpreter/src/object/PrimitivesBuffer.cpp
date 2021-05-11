@@ -4,67 +4,80 @@
 #include <string.h>
 #include <iostream>
 
-Primitive* PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double* n, const char* name)
+PrimitiveBuffer::PrimitiveBuffer()
 {
-	Primitive* newPrimitive = new Primitive(type, n, name);
-	buffer.push_back(newPrimitive);
-	return newPrimitive;
+	currentScope = 0;
+	buffer.resize(1);
 }
 
-Primitive* PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, const char* name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double n, const char* name)
 {
-	Primitive* newPrimitive = new Primitive(type, s, name);
-	buffer.push_back(newPrimitive);
-	return newPrimitive;
+	buffer.at(currentScope).emplace_back(type, n, name);
 }
 
-Primitive* PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, bool* b, const char* name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, const char* name)
 {
-	Primitive* newPrimitive = new Primitive(type, b, name);
-	buffer.push_back(newPrimitive);
-	return newPrimitive;
+	buffer.at(currentScope).emplace_back(type, s, name);
 }
 
-void PrimitiveBuffer::RemovePrimitive(Primitive* item)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, bool b, const char* name)
 {
-	buffer.erase(
-		std::remove_if(
-			buffer.begin(),
-			buffer.end(),
-			[&](Primitive* i){
-				if(i == item){
-					delete i;
-					return true;
-				}
-				return false;
-			}),
-		buffer.end());
+	buffer.at(currentScope).emplace_back(type, b, name);
 }
 
-void PrimitiveBuffer::RemovePrimitives(std::vector<Primitive*> items)
+// void PrimitiveBuffer::RemovePrimitive(Primitive* item)
+// {
+// 	buffer.erase(
+// 		std::remove_if(
+// 			buffer.begin(),
+// 			buffer.end(),
+// 			[&](Primitive* i){
+// 				if(i == item){
+// 					delete i;
+// 					return true;
+// 				}
+// 				return false;
+// 			}),
+// 		buffer.end());
+// }
+
+// void PrimitiveBuffer::RemovePrimitives(std::vector<Primitive> items)
+// {
+// 	buffer.erase(
+// 		std::remove_if(
+// 			buffer.begin(),
+// 			buffer.end(),
+// 			[&](Primitive* i){
+// 				for(auto j : items){
+// 					if(i == j){
+// 						delete i;
+// 						return true;
+// 					}
+// 				}
+// 				return false;
+// 			}),
+// 		buffer.end());
+// }
+
+void PrimitiveBuffer::IncreaseScope()
 {
-	buffer.erase(
-		std::remove_if(
-			buffer.begin(),
-			buffer.end(),
-			[&](Primitive* i){
-				for(auto j : items){
-					if(i == j){
-						delete i;
-						return true;
-					}
-				}
-				return false;
-			}),
-		buffer.end());
+	buffer.emplace_back();
+	currentScope++;
+}
+
+void PrimitiveBuffer::DescreaseScope()
+{
+	buffer.pop_back();
+	currentScope--;
 }
 
 Primitive* PrimitiveBuffer::GetByName(const char* name)
 {
-	for(auto item : buffer)
-		if(strcmp(item->getName(), name) == 0)
-			return item;
-	
+	for(int i = 0; i < buffer.size(); i++)
+		for(int j = 0; j < buffer.at(i).size(); j++)
+			if(strcmp(buffer.at(i).at(j).getName(), name) == 0)
+				return &buffer.at(i).at(j);
+
 	//Log::UnrecognizedIdentifier(name);
 	return nullptr;
 }
