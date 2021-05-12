@@ -1,20 +1,22 @@
 #include "object/Primitive.h"
-#include "executor/Eval.h"
-#include "util/Log.h"
+#include "evaluation/Eval.h"
+#include "debug/Log.h"
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, double n, const char* name)
+#include <iostream>
+
+Primitive::Primitive(const TYPE_PRIMITIVE* type, double n, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.num = n;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, const char* s, const char* name)
+Primitive::Primitive(const TYPE_PRIMITIVE* type, std::string s, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.string = s;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, bool b, const char* name)
+Primitive::Primitive(const TYPE_PRIMITIVE* type, bool b, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.boolean = b;
@@ -50,7 +52,7 @@ double Primitive::asNum()
 	return 0;
 }
 
-const char* Primitive::asString()
+std::string Primitive::asString()
 {
 	return Eval::toString(this);
 }

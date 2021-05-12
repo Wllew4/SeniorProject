@@ -1,5 +1,5 @@
 #include "object/PrimitivesBuffer.h"
-#include "util/Log.h"
+#include "debug/Log.h"
 #include <algorithm>
 #include <string.h>
 #include <iostream>
@@ -73,11 +73,16 @@ void PrimitiveBuffer::DescreaseScope()
 
 Primitive* PrimitiveBuffer::GetByName(std::string& name)
 {
+	//std::cout << name;
 	for(int i = 0; i < buffer.size(); i++)
-		for(int j = 0; j < buffer.at(i).size(); j++)
-			if(buffer.at(i).at(j).getName() == name)
+		for (int j = 0; j < buffer.at(i).size(); j++) {
+			//std::cout << buffer.at(i).at(j).getName();
+			if (buffer.at(i).at(j).getName() == name)
 				return &buffer.at(i).at(j);
+		}
+			
 
+	std::cout << "no luckj";
 	//Log::UnrecognizedIdentifier(name);
 	return nullptr;
 }

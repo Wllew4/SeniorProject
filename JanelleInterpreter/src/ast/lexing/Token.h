@@ -1,6 +1,9 @@
 #pragma once
 
-enum TokenType {
+#include <string>
+
+enum TokenType
+{
     T_STRINGDECL,
     T_NUMDECL,
     T_STRING,
@@ -25,7 +28,8 @@ enum TokenType {
     T_EOF
 };
 
-struct Token {
+struct Token
+{
     TokenType type;
-    const char* value;
+    std::string value;
 };

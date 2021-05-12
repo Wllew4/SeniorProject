@@ -1,18 +1,16 @@
-#include "parser/Parser.h"
-#include "parser/Lexer.h"
-#include "executor/Exec.h"
-#include "util/Log.h"
-#include "util/File.h"
-#include "util/Debug.h"
+#include "ast/parsing/Parser.h"
+#include "ast/lexing/Lexer.h"
 
-#include <iostream>
+#include "execution/Exec.h"
+
+#include "debug/Log.h"
+#include "debug/Debug.h"
 
 void Parser::parseNext(){
-    //delete m_current.value;
     m_current = m_next;
     m_next = Lexer::getNextToken();
     if(options[1]){
-        Log::PrintToken(m_next.type, m_next.value);
+        Log::PrintToken(m_next.type, m_next.value.c_str());
     }
 }
 
@@ -27,30 +25,33 @@ void Parser::parse(char* file){
     exit(0);
 }
 
+#include <iostream>
+
 ExprNode* Parser::parseAtomicExpr(){
     parseNext();
     switch(m_current.type){
         case TokenType::T_ID: {
-            ExprNode* idexpr = new ExprNode;
+            ExprNode* idexpr = new ExprNode();
             idexpr->type = ExprNodeType::EXPR_ID;
-            idexpr->val.id = m_current.value;
+            //std::cout << m_current.value;
+            idexpr->val.emplace<2>(m_current.value);
+            //std::cout << idexpr->val.id;
             return idexpr;
         }
         case TokenType::T_NUM: {
-            ExprNode* numexpr = new ExprNode;
+            ExprNode* numexpr = new ExprNode();
             numexpr->type = ExprNodeType::EXPR_NUM;
-            numexpr->val.num = atof(m_current.value);
-            free((void*)m_current.value);
+            numexpr->val.emplace<0>(std::stod(m_current.value));
             return numexpr;
         }
         case TokenType::T_STRING: {
-            ExprNode* stringexpr = new ExprNode;
+            ExprNode* stringexpr = new ExprNode();
             stringexpr->type = ExprNodeType::EXPR_STRING;
-            stringexpr->val.string = m_current.value;
+            stringexpr->val.emplace<1>(m_current.value);
             return stringexpr;
         }
         default:
-            Log::UnexpectedToken(m_next.value);
+            Log::UnexpectedToken(m_next.value.c_str());
             exit(0);
     }
 }
@@ -60,17 +61,18 @@ ExprNode* Parser::parseUnopExpr(){
     while(m_next.type == T_MINUS){
         parseNext();
         ExprNode* oldexpr = expr;
-        expr = new ExprNode;
+        expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_UNOP;
-        expr->val.unop = {oldexpr, '-'};
+        expr->val.emplace<4>(ExprNode::unop({oldexpr, '-'}));
     }
     if(expr == NULL) expr = parseAtomicExpr();
     else {
         ExprNode* traversal = expr;
-        while(traversal->val.unop.left != NULL){
-            traversal = traversal->val.unop.left;
+        while(std::get<4>(traversal->val).left != NULL){
+            traversal = std::get<4>(traversal->val).left;
         }
-        traversal->val.unop.left = parseAtomicExpr();
+        //definitely breaks. need more abstraction.
+        //std::get<4>(traversal->val).left = parseAtomicExpr();
     }
     return expr;
 }
@@ -89,9 +91,9 @@ ExprNode* Parser::parseBinopExpr(){
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseUnopExpr();
-        expr = new ExprNode;
+        expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
-        expr->val.binop = {left, right, type};
+        expr->val.emplace<3>(ExprNode::binop({left, right, type}));
     }
     return expr;
 }
@@ -108,9 +110,9 @@ ExprNode* Parser::parseExpr(){
         parseNext();
         ExprNode* left = expr;
         ExprNode* right = parseExpr();
-        expr = new ExprNode;
+        expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
-        expr->val.binop = {left, right, type};
+        expr->val.emplace<3>(ExprNode::binop({ left, right, type }));
     }
     return expr;
 }

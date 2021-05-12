@@ -1,8 +1,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "parser/Lexer.h"
-#include "parser/Token.h"
+#include "ast/lexing/Lexer.h"
+#include "ast/lexing/Token.h"
 
 #include <iostream>
 #include <string>
@@ -10,13 +10,15 @@
 char* m_position;
 int m_line = 1;
 
-void Lexer::Init(char* file){
+void Lexer::Init(char* file)
+{
     m_line = 1;
     m_position = file;
 }
 
-const char* Lexer::getLine(){
-    return std::to_string(m_line).c_str();
+std::string Lexer::getLine()
+{
+    return std::to_string(m_line);
 }
 
 Token Lexer::getNextToken(){
@@ -82,11 +84,8 @@ Token Lexer::getNextToken(){
                     length++;
                     m_position++;
                 }
-                char* value = new char[length];
-                memcpy(value, start, length);
-                value[length] = '\0';
                 m_position++;
-                return { TokenType::T_STRING, value };
+                return { TokenType::T_STRING, std::string(start, start + length) };
                 }
             
             default:
@@ -100,34 +99,32 @@ Token Lexer::getNextToken(){
                         m_position++;
                     }
                     length++;
-                    char* value = new char[length];
-                    memcpy(value, start, length);
-                    value[length] = '\0';
-                    if(strcmp(value, "println") == 0){
+                    std::string value = std::string(start, start + length);
+                    if(value == "println"){
                         m_position++;
                         return { TokenType::T_PRINTLN, value };
                     }
-                    if(strcmp(value, "print") == 0){
+                    if(value == "print"){
                         m_position++;
                         return { TokenType::T_PRINT, value };
                     }
-                    if(strcmp(value, "num") == 0){
+                    if(value == "num"){
                         m_position++;
                         return { TokenType::T_NUMDECL, value };
                     }
-                    if(strcmp(value, "string") == 0){
+                    if(value == "string"){
                         m_position++;
                         return { TokenType::T_STRINGDECL, value };
                     }
-                    if(strcmp(value, "if") == 0){
+                    if(value == "if"){
                         m_position++;
                         return { TokenType::T_IF, value };
                     }
-                    if(strcmp(value, "else") == 0){
+                    if(value == "else"){
                         m_position++;
                         return { TokenType::T_ELSE, value };
                     }
-                    if(strcmp(value, "while") == 0){
+                    if(value == "while"){
                         m_position++;
                         return { TokenType::T_WHILE, value };
                     }
@@ -144,10 +141,7 @@ Token Lexer::getNextToken(){
                         m_position++;
                     }
                     length++;
-                    char* value = new char[length];
-                    memcpy(value, start, length);
-                    value[length] = '\0';
-                    return { TokenType::T_NUM, value };
+                    return { TokenType::T_NUM, std::string(start, start + length) };
                 }
         }
     }

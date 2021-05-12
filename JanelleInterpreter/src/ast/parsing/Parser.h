@@ -1,7 +1,7 @@
 #pragma once
 
-#include "parser/Token.h"
-#include "parser/StmtNode.h"
+#include "ast/lexing/Token.h"
+#include "ast/parsing/StmtNode.h"
 
 namespace Parser {
     namespace {
@@ -11,15 +11,13 @@ namespace Parser {
     
     void parseNext();
 
-    void printToken();
-
     void parse(char* file);
 
     ExprNode* parseAtomicExpr();
     ExprNode* parseUnopExpr();
     ExprNode* parseBinopExpr();
 
-    ExprNode* parseBooleanExpr();
+    //ExprNode* parseBooleanExpr();
 
     ExprNode* parseExpr();
 

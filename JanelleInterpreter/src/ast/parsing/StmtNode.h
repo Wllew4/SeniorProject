@@ -1,7 +1,7 @@
 #pragma once
 
-#include "parser/Token.h"
-#include "parser/ExprNode.h"
+#include "ast/lexing/Token.h"
+#include "ast/parsing/ExprNode.h"
 
 #include <vector>
 

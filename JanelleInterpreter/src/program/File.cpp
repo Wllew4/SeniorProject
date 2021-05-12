@@ -1,9 +1,13 @@
+#pragma warning(disable:4996)
+
 #include <string>
 
-#include "util/Log.h"
-#include "util/Debug.h"
+#include "debug/Log.h"
+#include "debug/Debug.h"
 #include "program/File.h"
-#include "parser/Parser.h"
+#include "ast/parsing/Parser.h"
+
+
 
 void File::load(char* file){
     FILE* f = fopen(file, "rb");

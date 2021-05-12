@@ -22,12 +22,12 @@ class Primitive {
 		Data m_data;
 		std::string m_name;
 	public:
-		Primitive(const TYPE_PRIMITIVE* type, double n, 	const char* name);
-		Primitive(const TYPE_PRIMITIVE* type, const char* s,const char* name);
-		Primitive(const TYPE_PRIMITIVE* type, bool b, 		const char* name);
+		Primitive(const TYPE_PRIMITIVE* type, double n,		std::string name);
+		Primitive(const TYPE_PRIMITIVE* type, std::string s,std::string name);
+		Primitive(const TYPE_PRIMITIVE* type, bool b,		std::string name);
 		Primitive(const Primitive& r);
 		~Primitive();
-		const char* asString();
+		std::string asString();
 		double asNum();
 		bool asBool();
 		void setValue(double val);

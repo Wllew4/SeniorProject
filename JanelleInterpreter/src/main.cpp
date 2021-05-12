@@ -7,10 +7,10 @@
  *          - Rendering
  */
 
-
+#pragma warning(disable:4996)
 #include <string>
 
-#include "util/Debug.h"
+#include "debug/Debug.h"
 #include "program/Program.h"
 
 Program program;
