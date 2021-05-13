@@ -12,8 +12,8 @@ project "JanelleInterpreter"
         "src"
     }
 
-    files { "**.h", "**.cpp" }
+    files { "src/**.h", "src/**.cpp" }
 
     filter "configurations:Release"
-        defines { "DEBUG" }
+        defines { "RELEASE" }
         symbols "On"
