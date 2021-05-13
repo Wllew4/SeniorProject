@@ -1,3 +1,6 @@
+*.make
+Makefile
+
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.users
