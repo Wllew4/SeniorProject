@@ -1,7 +1,6 @@
 # SeniorProject
-My Senior Project for BHS. I will be writing my own language and then using it to complete the FizzBuzz challenge, and potentially to recreate John Conway's Game of Life.
+My Senior Project for BHS. I will be writing my own language and then using it to complete the FizzBuzz challenge.
 
-Windows users can build using build.bat
-Mac/Linux users can build using build.sh
+Build using [Premake](https://premake.github.io).
 
-Full releases to come at a later date.
+Code is still very messy and work-in-progress. Full releases to come later.
