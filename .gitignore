@@ -1,6 +1,8 @@
 *.make
 Makefile
 
+.replit
+
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.users
