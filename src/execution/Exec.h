@@ -1,3 +1,5 @@
 #include "ast/parsing/StmtNode.h"
 
-void Exec(StmtNode* statement);
+void ExecutionInit(char* file);
+
+void Exec(std::shared_ptr<StmtNode> statement);

@@ -3,6 +3,8 @@
 #include "ast/lexing/Token.h"
 #include "ast/parsing/StmtNode.h"
 
+#include <memory>
+
 namespace Parser {
     namespace {
         Token m_next;
@@ -11,7 +13,9 @@ namespace Parser {
     
     void parseNext();
 
-    void parse(char* file);
+    void Init(char* file);
+
+    bool IsDone();
 
     ExprNode* parseAtomicExpr();
     ExprNode* parseUnopExpr();
@@ -21,5 +25,7 @@ namespace Parser {
 
     ExprNode* parseExpr();
 
-    StmtNode* parseNode();
+    std::unique_ptr<StmtNode> parseNode();
+
+    StmtNodeType TokenTypeToStmtType(TokenType& t);
 }

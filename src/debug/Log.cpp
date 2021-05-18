@@ -62,7 +62,7 @@ void Log::PrintStatement(int type){
 }
 
 void Log::UnexpectedToken(const char* value){
-    Log::Error(4, "Unexpected token on line ", Lexer::getLine(), ": ", value);
+    Log::Error(4, "Unexpected token on line ", Lexer::getLine().c_str(), ": ", value);
 }
 
 void Log::MissingToken(int x){

@@ -14,19 +14,17 @@ void Parser::parseNext(){
     }
 }
 
-void Parser::parse(char* file){
+void Parser::Init(char* file){
     Lexer::Init(file);
     parseNext();
-    while(m_next.type != TokenType::T_EOF){
-        StmtNode* statement = parseNode();
-        Exec(statement);
-        parseNext();
-    }
-    exit(0);
+}
+
+bool Parser::IsDone()
+{
+    return m_next.type == TokenType::T_EOF;
 }
 
 #include <iostream>
-
 ExprNode* Parser::parseAtomicExpr(){
     parseNext();
     switch(m_current.type){
@@ -51,6 +49,7 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
+            std::cout << m_current.type;
             Log::UnexpectedToken(m_next.value.c_str());
             exit(0);
     }
@@ -117,87 +116,179 @@ ExprNode* Parser::parseExpr(){
     return expr;
 }
 
-StmtNode* Parser::parseNode(){
-    StmtNode* node = new StmtNode;
+std::unique_ptr<StmtNode> Parser::parseNode(){
+    //StmtNode* node = new StmtNode;
 
-    switch (m_next.type){
-        case TokenType::T_PRINTLN: {
-            node->type = StmtNodeType::STMT_PRINTLN;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_SEMICOLON){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_SEMICOLON);
-            return node;
-        }
-        case TokenType::T_PRINT: {
-            node->type = StmtNodeType::STMT_PRINT;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_SEMICOLON){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_SEMICOLON);
-            return node;
-        }
-        case TokenType::T_NUMDECL: {
-            node->type = StmtNodeType::STMT_NUMDECL;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_SEMICOLON){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_SEMICOLON);
-            return node;
-        }
-        case TokenType::T_STRINGDECL: {
-            node->type = StmtNodeType::STMT_STRINGDECL;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            if(m_next.type == TokenType::T_SEMICOLON){
-                node->val = expr;
-            }
-            else Log::MissingToken(TokenType::T_SEMICOLON);
-            return node;
-        }
-        case TokenType::T_IF: {
-            node->type = StmtNodeType::STMT_CONDITIONAL;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            node->val = expr;
-            node->body = parseNode();
-            parseNext();
-            if(m_next.type == T_ELSE){
-                parseNext();
-                node->elsebody = parseNode();
-            }
-            return node;
-        }
-        case TokenType::T_WHILE: {
-            node->type = StmtNodeType::STMT_WHILE;
-            parseNext();
-            ExprNode* expr = parseExpr();
-            node->val = expr;
-            node->body = parseNode();
-            //parseNext();
-            return node;
-        }
-        case TokenType::T_OPENBRACE: {
-            node->type = StmtNodeType::STMT_SCOPE;
-            parseNext();
-            while(m_next.type != T_CLOSEBRACE){
-                node->scope.push_back(parseNode());
-                parseNext();
-            }
-            return node;
-        }
-        default: {
-            ExprNode* expr = parseExpr();
-            node->type = StmtNodeType::STMT_EXPR;
-            node->val = expr;
-            return node;
-        }
+    StmtNodeType t = TokenTypeToStmtType(m_next.type);
+    if (options[2]) {
+        Log::PrintStatement(t);
     }
-    return node;
+    
+    //ExprNode* v = ;
+    if (t == StmtNodeType::STMT_EXPR)
+    {
+        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
+    }
+    if (t <= StmtNodeType::STMT_NUMDECL)
+    {
+        parseNext();
+        //if(m_next.type == TokenType::T_SEMICOLON)
+        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
+    }
+    if (t <= StmtNodeType::STMT_CONDITIONAL)
+    {
+        parseNext();
+        /*auto ptr = std::make_unique<StmtNode>(
+            new StmtNode(
+                t,
+                FlowControl({
+                    parseExpr(),
+                    std::make_shared<StmtNode>(parseNode())
+                    })));*/
+        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControl({parseExpr(),std::shared_ptr<StmtNode>(parseNode())})));
+    }
+    if (t == StmtNodeType::STMT_ELSE)
+    {
+        parseNext();
+        return std::unique_ptr<StmtNode>(new StmtNode(t, std::shared_ptr<StmtNode>(parseNode())));
+    }
+    if (t == StmtNodeType::STMT_SCOPE)
+    {
+        parseNext();
+        std::vector<std::shared_ptr<StmtNode>> stmts;
+        while (m_next.type != TokenType::T_CLOSEBRACE)
+        {
+            stmts.push_back(parseNode());
+            parseNext();
+        }
+
+        /*auto ptr = std::make_unique<StmtNode>(
+            new StmtNode(
+                t,
+                stmts
+            ));*/
+        return std::unique_ptr<StmtNode>(new StmtNode(t, stmts));
+    }
+
+    if (options[2]) {
+        Log::PrintStatement(t);
+    }
+
+    return nullptr;
+
+    //return std::make_unique<StmtNode>(new StmtNode(t, v));
+
+    /*StmtNode* b = new StmtNode();
+    StmtNode* eb = new StmtNode();
+    std::vector<StmtNode*> s;*/
+
+    //switch (m_next.type){
+    //    case TokenType::T_PRINTLN: {
+    //        t = StmtNodeType::STMT_PRINTLN;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        if(m_next.type == TokenType::T_SEMICOLON){
+    //            v = expr;
+    //        }
+    //        else Log::MissingToken(TokenType::T_SEMICOLON);
+    //        return std::make_unique<StmtNode>();
+    //        //return node;
+    //    }
+    //    case TokenType::T_PRINT: {
+    //        t = StmtNodeType::STMT_PRINT;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        if(m_next.type == TokenType::T_SEMICOLON){
+    //            v = expr;
+    //        }
+    //        else Log::MissingToken(TokenType::T_SEMICOLON);
+    //        //return node;
+    //    }
+    //    case TokenType::T_NUMDECL: {
+    //        t = StmtNodeType::STMT_NUMDECL;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        if(m_next.type == TokenType::T_SEMICOLON){
+    //            v = expr;
+    //        }
+    //        else Log::MissingToken(TokenType::T_SEMICOLON);
+    //        //return node;
+    //    }
+    //    case TokenType::T_STRINGDECL: {
+    //        t = StmtNodeType::STMT_STRINGDECL;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        if(m_next.type == TokenType::T_SEMICOLON){
+    //            v = expr;
+    //        }
+    //        else Log::MissingToken(TokenType::T_SEMICOLON);
+    //        //return node;
+    //    }
+    //    case TokenType::T_IF: {
+    //        t = StmtNodeType::STMT_CONDITIONAL;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        v = expr;
+    //        b = parseNode().get();
+    //        parseNext();
+    //        if(m_next.type == T_ELSE){
+    //            parseNext();
+    //            eb = parseNode().get();
+    //        }
+    //        //return node;
+    //    }
+    //    case TokenType::T_WHILE: {
+    //        t = StmtNodeType::STMT_WHILE;
+    //        parseNext();
+    //        ExprNode* expr = parseExpr();
+    //        v = expr;
+    //        b = parseNode().get();
+    //        parseNext();
+    //        //return node;
+    //    }
+    //    case TokenType::T_OPENBRACE: {
+    //        t = StmtNodeType::STMT_SCOPE;
+    //        parseNext();
+    //        while(m_next.type != T_CLOSEBRACE){
+    //            s.push_back(parseNode().get());
+    //            parseNext();
+    //        }
+    //        //return node;
+    //    }
+    //    default: {
+    //        ExprNode* expr = parseExpr();
+    //        t = StmtNodeType::STMT_EXPR;
+    //        v = expr;
+    //        //return node;
+    //    }
+    //}
+    //return node;
+
+    
+}
+
+StmtNodeType Parser::TokenTypeToStmtType(TokenType& t)
+{
+    switch (t)
+    {
+        case TokenType::T_PRINT:
+            return StmtNodeType::STMT_PRINT;
+        case TokenType::T_PRINTLN:
+            return StmtNodeType::STMT_PRINTLN;
+        case TokenType::T_STRINGDECL:
+            return StmtNodeType::STMT_STRINGDECL;
+        case TokenType::T_NUMDECL:
+            return StmtNodeType::STMT_NUMDECL;
+        case TokenType::T_IF:
+            return StmtNodeType::STMT_CONDITIONAL;
+        case TokenType::T_ELSE:
+            return StmtNodeType::STMT_ELSE;
+        case TokenType::T_WHILE:
+            return StmtNodeType::STMT_WHILE;
+        case TokenType::T_OPENBRACE:
+            return StmtNodeType::STMT_SCOPE;
+        default:
+            return StmtNodeType::STMT_EXPR;
+    }
+    return StmtNodeType();
 }

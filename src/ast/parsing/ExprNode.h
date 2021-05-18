@@ -6,11 +6,11 @@
 
 enum class ExprNodeType
 {
-    EXPR_NUM,
-    EXPR_STRING,
-    EXPR_ID,
-    EXPR_BINOP,
-    EXPR_UNOP
+    EXPR_NUM    = 0,
+    EXPR_STRING = 1,
+    EXPR_ID     = 2,
+    EXPR_BINOP  = 3,
+    EXPR_UNOP   = 4
 };
 
 struct ExprNode

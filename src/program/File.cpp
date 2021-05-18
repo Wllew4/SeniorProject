@@ -7,6 +7,7 @@
 #include "program/File.h"
 #include "ast/parsing/Parser.h"
 
+#include "execution/Exec.h"
 
 
 void File::load(char* file){
@@ -20,7 +21,7 @@ void File::load(char* file){
         m_file = new char[bufsize + 1];
         m_file[bufsize] = '\0';
 
-        int readsize = fread(m_file, sizeof(char), bufsize, f);
+        int readsize = fread(m_file, sizeof(char), bufsize + 1, f);
         if(bufsize != readsize){
             free(m_file);
             Log::Error(3,"Could not allocate memory for file ", file, "\n");
@@ -37,5 +38,5 @@ void File::load(char* file){
 }
 
 void File::execute(){
-	Parser::parse(m_file);
+	ExecutionInit(m_file);
 }
