@@ -1,106 +1,124 @@
 #include "execution/Exec.h"
 #include "evaluation/Eval.h"
 #include "debug/Log.h"
-#include "debug/Debug.h"
-#include "object/Primitive.h"
-
 #include "ast/parsing/Parser.h"
 
 #include <iostream>
 
 PrimitiveBuffer* buffer = program.GetBuffer();
 
-void ExecutionInit(char* file)
+void Exec::Init(char* file)
 {
     Parser::Init(file);
 
     while (!Parser::IsDone()) {
         std::shared_ptr<StmtNode> stmt = Parser::parseNode();
-        Exec(stmt);
+        Execute(stmt);
         Parser::parseNext();
     }
 
     exit(0);
 }
 
-void Exec(std::shared_ptr<StmtNode> statement)
+void Exec::Execute(std::shared_ptr<StmtNode> statement)
 {
-
     switch(statement->type){
         //  Printing
         case StmtNodeType::STMT_PRINT:
         case StmtNodeType::STMT_PRINTLN:
-            if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_STRING){
+            if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_STRING)
+            {
                 std::cout << Eval::EvalStringExpr(std::get<ExprNode*>(statement->data));
             }
-            else if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_NUM){
+            else if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_NUM)
+            {
                 std::cout << Eval::EvalNumExpr(std::get<ExprNode*>(statement->data));
             }
-            else if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID){
-                std::cout << buffer->GetByName(std::get<1>(std::get<ExprNode*>(statement->data)->val))->asString();
+            else if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
+            {
+                std::cout << buffer->GetByName(std::get<2>(std::get<ExprNode*>(statement->data)->val))->asString();
             }
 
             if(statement->type == StmtNodeType::STMT_PRINTLN){ std::cout << std::endl; }
-            return;
+            break;
         
         //Number Declaration
-        //case StmtNodeType::STMT_NUMDECL:
-        //    //if(buffer->GetByName(std::get<2>(statement->val->val)) != nullptr){
-        //        //Log::RedefinedIdentifier(std::get<2>(statement->val->val).c_str());
-        //        //exit(0);
-        //    //}
-        //    if(statement->val->type == ExprNodeType::EXPR_ID){
-        //        buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), new double (0), std::get<2>(statement->val->val));
-        //        break;
-        //    }
-        //    buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_NUM), Eval::EvalNumExpr(std::get<3>(statement->val->val).right), std::get<2>(std::get<3>(statement->val->val).left->val));
-        //    break;
+        case StmtNodeType::STMT_NUMDECL:
+        {
+            ExprNode* expression = std::get<ExprNode*>(statement->data);
 
-        ////String Declaration
-        //case StmtNodeType::STMT_STRINGDECL:
-        //    if(buffer->GetByName(std::get<2>(statement->val->val)) != nullptr){
-        //        Log::RedefinedIdentifier(std::get<2>(statement->val->val).c_str());
-        //        exit(0);
-        //    }
-        //    if(statement->val->type == ExprNodeType::EXPR_ID){
-        //        buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), std::get<2>(statement->val->val));
-        //        break;
-        //    }
-        //    buffer->AddPrimitive(new TYPE_PRIMITIVE (TYPE_STRING), new char(0), std::get<2>(std::get<3>(statement->val->val).left->val));
-        //    buffer->GetByName(std::get<2>(std::get<3>(statement->val->val).left->val))->setValue(Eval::EvalStringExpr(std::get<3>(statement->val->val).right));
-        //    break;
+            if (std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
+            {
+                buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_NUM), new double(0), std::get<2>(expression->val));
+                break;
+            }
+            buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_NUM), Eval::EvalNumExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
+            break;
+        }
+        
+        //String Declaration
+        case StmtNodeType::STMT_STRINGDECL:
+        {
+            ExprNode* expression = std::get<ExprNode*>(statement->data);
 
-        //case StmtNodeType::STMT_CONDITIONAL:
-        //    if(Eval::EvalBoolExpr(statement->val)){
-        //        Exec(statement->body);
-        //    }
-        //    else {
-        //        Exec(statement->elsebody);
-        //    }
-        //    break;
+            if (std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
+            {
+                buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_STRING), std::string(), std::get<2>(expression->val));
+                break;
+            }
+            buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_STRING), Eval::EvalStringExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
+            break;
+        }
 
-        //case StmtNodeType::STMT_WHILE:
-        //    while(Eval::EvalBoolExpr(statement->val)){
-        //        Exec(statement->body);
-        //    }
-        //    break;
+        //If statements
+        case StmtNodeType::STMT_CONDITIONAL:
+        {
+            bool bContainsElse = std::get<FlowControlWithElse>(statement->data).elsebody.get()->type == StmtNodeType::STMT_ELSE;
+            bool bIsTrue = Eval::EvalBoolExpr(std::get<FlowControlWithElse>(statement->data).boolean);
+            if (bContainsElse && bIsTrue)
+            {
+                Execute(std::get<FlowControlWithElse>(statement->data).body);
+            }
+            else if(bIsTrue)
+            {
+                Execute(std::get<FlowControlWithElse>(statement->data).body);
+                Execute(std::get<FlowControlWithElse>(statement->data).elsebody);
+            }
+            else if (bContainsElse)
+            {
+                Execute(std::get<4>(std::get<FlowControlWithElse>(statement->data).elsebody.get()->data));
+            }
+            else
+            {
+                Execute(std::get<FlowControlWithElse>(statement->data).elsebody);
+            }
+            break;
+        }
 
-        ////Expression Statements
-        //case StmtNodeType::STMT_EXPR:
-        //    switch(*buffer->GetByName(std::get<2>(std::get<3>(statement->val->val).left->val))->getType()){
-        //        case TYPE_PRIMITIVE::TYPE_NUM:
-        //            buffer->GetByName(std::get<2>(std::get<3>(statement->val->val).left->val))->setValue(Eval::EvalNumExpr(std::get<3>(statement->val->val).right));
-        //            break;
-        //        case TYPE_PRIMITIVE::TYPE_STRING:
-        //            buffer->GetByName(std::get<2>(std::get<3>(statement->val->val).left->val))->setValue(std::get<1>(std::get<3>(statement->val->val).right->val));
-        //            break;
-        //    }
-        //    break;
+        //While loops
+        case StmtNodeType::STMT_WHILE:
+            while(Eval::EvalBoolExpr(std::get<FlowControl>(statement->data).boolean)){
+                Execute(std::get<FlowControl>(statement->data).body);
+            }
+            break;
 
-        //case StmtNodeType::STMT_SCOPE:
-        //    buffer->IncreaseScope();
-        //    for(auto i : statement->scope) Exec(i);
-        //    buffer->DescreaseScope();
-        //    break;
+        //Expression Statements
+        case StmtNodeType::STMT_EXPR:
+            switch(*buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->getType()){
+                case TYPE_PRIMITIVE::TYPE_NUM:
+                    buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalNumExpr(std::get<3>(std::get<0>(statement->data)->val).right));
+                    break;
+                case TYPE_PRIMITIVE::TYPE_STRING:
+                    buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalStringExpr(std::get<3>(std::get<0>(statement->data)->val).right));
+                    break;
+            }
+            break;
+
+        //Scopes
+        case StmtNodeType::STMT_SCOPE:
+            buffer->IncreaseScope();
+            for(auto i : std::get<2>(statement->data)) Execute(i);
+            buffer->DescreaseScope();
+            break;
     }
 }

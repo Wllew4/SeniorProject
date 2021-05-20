@@ -1,9 +1,8 @@
-#include <string.h>
-#include <ctype.h>
-
 #include "ast/lexing/Lexer.h"
 #include "ast/lexing/Token.h"
 
+#include <string.h>
+#include <ctype.h>
 #include <iostream>
 #include <string>
 

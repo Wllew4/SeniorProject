@@ -5,7 +5,6 @@
 #include "debug/Log.h"
 #include "debug/Debug.h"
 #include "program/File.h"
-#include "ast/parsing/Parser.h"
 
 #include "execution/Exec.h"
 
@@ -38,5 +37,5 @@ void File::load(char* file){
 }
 
 void File::execute(){
-	ExecutionInit(m_file);
+	Exec::Init(m_file);
 }

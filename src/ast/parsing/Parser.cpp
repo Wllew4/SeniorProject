@@ -24,7 +24,6 @@ bool Parser::IsDone()
     return m_next.type == TokenType::T_EOF;
 }
 
-#include <iostream>
 ExprNode* Parser::parseAtomicExpr(){
     parseNext();
     switch(m_current.type){
@@ -49,7 +48,6 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
-            std::cout << m_current.type;
             Log::UnexpectedToken(m_next.value.c_str());
             exit(0);
     }
@@ -115,16 +113,15 @@ ExprNode* Parser::parseExpr(){
     }
     return expr;
 }
-
-std::unique_ptr<StmtNode> Parser::parseNode(){
-    //StmtNode* node = new StmtNode;
+#include <iostream>
+std::unique_ptr<StmtNode> Parser::parseNode()
+{
 
     StmtNodeType t = TokenTypeToStmtType(m_next.type);
     if (options[2]) {
         Log::PrintStatement(t);
     }
     
-    //ExprNode* v = ;
     if (t == StmtNodeType::STMT_EXPR)
     {
         return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
@@ -132,20 +129,21 @@ std::unique_ptr<StmtNode> Parser::parseNode(){
     if (t <= StmtNodeType::STMT_NUMDECL)
     {
         parseNext();
-        //if(m_next.type == TokenType::T_SEMICOLON)
         return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
+    }
+    if (t == StmtNodeType::STMT_WHILE)
+    {
+        parseNext();
+        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControl({ parseExpr(), std::shared_ptr<StmtNode>(parseNode()) })));
     }
     if (t <= StmtNodeType::STMT_CONDITIONAL)
     {
         parseNext();
-        /*auto ptr = std::make_unique<StmtNode>(
-            new StmtNode(
-                t,
-                FlowControl({
-                    parseExpr(),
-                    std::make_shared<StmtNode>(parseNode())
-                    })));*/
-        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControl({parseExpr(),std::shared_ptr<StmtNode>(parseNode())})));
+        auto expr = parseExpr();
+        auto stmt = std::shared_ptr<StmtNode>(parseNode());
+        parseNext();
+        auto elsestmt = std::shared_ptr<StmtNode>(parseNode());
+        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControlWithElse({ expr, stmt, elsestmt })));
     }
     if (t == StmtNodeType::STMT_ELSE)
     {
@@ -161,12 +159,7 @@ std::unique_ptr<StmtNode> Parser::parseNode(){
             stmts.push_back(parseNode());
             parseNext();
         }
-
-        /*auto ptr = std::make_unique<StmtNode>(
-            new StmtNode(
-                t,
-                stmts
-            ));*/
+        //parseNext();
         return std::unique_ptr<StmtNode>(new StmtNode(t, stmts));
     }
 

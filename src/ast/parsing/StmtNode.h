@@ -1,11 +1,9 @@
 #pragma once
 
-#include "ast/lexing/Token.h"
 #include "ast/parsing/ExprNode.h"
 
 #include <vector>
 #include <variant>
-
 #include <memory>
 
 enum StmtNodeType {
@@ -28,15 +26,21 @@ struct FlowControl
     std::shared_ptr<StmtNode> body;
 };
 
+struct FlowControlWithElse
+{
+    ExprNode* boolean;
+    std::shared_ptr<StmtNode> body;
+    std::shared_ptr<StmtNode> elsebody;
+};
+
 struct StmtNode {
     StmtNodeType type;
-
-    //ExprNode* val;
 
     std::variant <
         ExprNode*,
         FlowControl,
         std::vector<std::shared_ptr<StmtNode>>,
+        FlowControlWithElse,
         std::shared_ptr<StmtNode>> data;
 
     StmtNode(StmtNodeType t, ExprNode* v)
@@ -57,10 +61,16 @@ struct StmtNode {
         data.emplace<2>(d);
     }
 
-    StmtNode(StmtNodeType t, std::shared_ptr<StmtNode> d)
+    StmtNode(StmtNodeType t, FlowControlWithElse d)
     {
         type = t;
         data.emplace<3>(d);
+    }
+
+    StmtNode(StmtNodeType t, std::shared_ptr<StmtNode> d)
+    {
+        type = t;
+        data.emplace<4>(d);
     }
 
     StmtNode(const StmtNode& o)
@@ -68,9 +78,4 @@ struct StmtNode {
         type = o.type;
         data = o.data;
     }
-
-    /*StmtNode* body;
-    StmtNode* elsebody;*/
-
-    //std::vector<StmtNode*> scope;
 };

@@ -28,7 +28,6 @@ const char* primitivetypes[] = {
 void Log::Error(int size, ...){
     va_list args;
     va_start(args, size);
-    //std::cout << "\u001b[31mJANELLE:\tError:\t\033[0m";
     std::cout << "JANELLE:\tError:\t";
     for(int i = 0; i < size; i++){
         std::cout << va_arg(args, const char*);
@@ -36,14 +35,11 @@ void Log::Error(int size, ...){
     va_end(args);
 
     fflush(stdout);
-
-    exit(0);
 }
 
 void Log::Print(int size, ...){
     va_list args;
     va_start(args, size);
-    //std::cout << "\u001b[36mJANELLE:\t\033[0m";
     std::cout << "JANELLE:\t";
     for(int i = 0; i < size; i++){
         std::cout << va_arg(args, const char*);

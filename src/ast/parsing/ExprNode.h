@@ -30,33 +30,11 @@ struct ExprNode
 
     ExprNodeType type;
 
+    //  Num, String, Id, binop, unop
     std::variant<double, std::string, std::string, binop, unop> val;
     
     void operator=(const ExprNode& r)
     {
         val = r.val;
     }
-
-    /*union val{
-        double num;
-
-        std::string string;
-
-        std::string id;
-
-        struct {
-            ExprNode* left;
-            ExprNode* right;
-            char op_type;
-        } binop;
-
-        struct {
-            ExprNode* left;
-            char op_type;
-        } unop;
-
-        val() { id = ""; }
-        ~val(){}
-        val(const val& r){ id = ""; }
-    } val;*/
 };

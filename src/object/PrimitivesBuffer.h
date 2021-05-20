@@ -9,7 +9,7 @@ class PrimitiveBuffer {
 	public:
 		PrimitiveBuffer();
 		void AddPrimitive(const TYPE_PRIMITIVE* type, double n, std::string& name);
-		void AddPrimitive(const TYPE_PRIMITIVE* type, const char* s, std::string& name);
+		void AddPrimitive(const TYPE_PRIMITIVE* type, std::string s, std::string& name);
 		void AddPrimitive(const TYPE_PRIMITIVE* type, bool b, std::string& name);
 		void IncreaseScope();
 		void DescreaseScope();
