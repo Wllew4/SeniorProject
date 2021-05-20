@@ -5,6 +5,6 @@ void Program::execute(char* main){
   mainFile.execute();
 }
 
-PrimitiveBuffer* Program::GetBuffer(){
-	return &objbuffer;
+PrimitiveBuffer& Program::GetBuffer(){
+	return objbuffer;
 }

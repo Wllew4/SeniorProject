@@ -18,13 +18,13 @@ union Data {
 
 class Primitive {
 	private:
-		const TYPE_PRIMITIVE* m_type;
+		const TYPE_PRIMITIVE m_type;
 		Data m_data;
 		std::string m_name;
 	public:
-		Primitive(const TYPE_PRIMITIVE* type, double n,		std::string name);
-		Primitive(const TYPE_PRIMITIVE* type, std::string s,std::string name);
-		Primitive(const TYPE_PRIMITIVE* type, bool b,		std::string name);
+		Primitive(const TYPE_PRIMITIVE type, double n,		std::string name);
+		Primitive(const TYPE_PRIMITIVE type, std::string s,std::string name);
+		Primitive(const TYPE_PRIMITIVE type, bool b,		std::string name);
 		Primitive(const Primitive& r);
 		~Primitive();
 		std::string asString();
@@ -34,6 +34,6 @@ class Primitive {
 		void setValue(std::string val);
 		void setValue(bool val);
 		std::string& getName();
-		const TYPE_PRIMITIVE* getType();
+		const TYPE_PRIMITIVE getType();
 		Data& getData();
 };

@@ -10,7 +10,7 @@ class Program {
 
 	public:
 		void execute(char* main);
-		PrimitiveBuffer* GetBuffer();
+		PrimitiveBuffer& GetBuffer();
 };
 
 extern Program program;

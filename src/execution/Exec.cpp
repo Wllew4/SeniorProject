@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-PrimitiveBuffer* buffer = program.GetBuffer();
+PrimitiveBuffer& buffer = program.GetBuffer();
 
 void Exec::Init(char* file)
 {
@@ -16,8 +16,6 @@ void Exec::Init(char* file)
         Execute(stmt);
         Parser::parseNext();
     }
-
-    exit(0);
 }
 
 void Exec::Execute(std::shared_ptr<StmtNode> statement)
@@ -36,7 +34,7 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
             }
             else if(std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
             {
-                std::cout << buffer->GetByName(std::get<2>(std::get<ExprNode*>(statement->data)->val))->asString();
+                std::cout << buffer.GetByName(std::get<2>(std::get<ExprNode*>(statement->data)->val))->asString();
             }
 
             if(statement->type == StmtNodeType::STMT_PRINTLN){ std::cout << std::endl; }
@@ -49,10 +47,10 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
 
             if (std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
             {
-                buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_NUM), new double(0), std::get<2>(expression->val));
+                buffer.AddPrimitive(TYPE_PRIMITIVE::TYPE_NUM, 0.0, std::get<2>(expression->val));
                 break;
             }
-            buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_NUM), Eval::EvalNumExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
+            buffer.AddPrimitive(TYPE_PRIMITIVE::TYPE_NUM, Eval::EvalNumExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
             break;
         }
         
@@ -63,10 +61,10 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
 
             if (std::get<ExprNode*>(statement->data)->type == ExprNodeType::EXPR_ID)
             {
-                buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_STRING), std::string(), std::get<2>(expression->val));
+                buffer.AddPrimitive(TYPE_PRIMITIVE::TYPE_STRING, std::string(), std::get<2>(expression->val));
                 break;
             }
-            buffer->AddPrimitive(new TYPE_PRIMITIVE(TYPE_STRING), Eval::EvalStringExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
+            buffer.AddPrimitive(TYPE_PRIMITIVE::TYPE_STRING, Eval::EvalStringExpr(std::get<3>(expression->val).right), std::get<2>(std::get<3>(expression->val).left->val));
             break;
         }
 
@@ -104,21 +102,21 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
 
         //Expression Statements
         case StmtNodeType::STMT_EXPR:
-            switch(*buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->getType()){
+            switch(buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->getType()){
                 case TYPE_PRIMITIVE::TYPE_NUM:
-                    buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalNumExpr(std::get<3>(std::get<0>(statement->data)->val).right));
+                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalNumExpr(std::get<3>(std::get<0>(statement->data)->val).right));
                     break;
                 case TYPE_PRIMITIVE::TYPE_STRING:
-                    buffer->GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalStringExpr(std::get<3>(std::get<0>(statement->data)->val).right));
+                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalStringExpr(std::get<3>(std::get<0>(statement->data)->val).right));
                     break;
             }
             break;
 
         //Scopes
         case StmtNodeType::STMT_SCOPE:
-            buffer->IncreaseScope();
+            buffer.IncreaseScope();
             for(auto i : std::get<2>(statement->data)) Execute(i);
-            buffer->DescreaseScope();
+            buffer.DescreaseScope();
             break;
     }
 }

@@ -13,6 +13,6 @@ namespace Eval {
     bool        toBool          (Primitive* val);
 
     namespace {
-        PrimitiveBuffer* buffer = program.GetBuffer();
+        PrimitiveBuffer& buffer = program.GetBuffer();
     }
 };

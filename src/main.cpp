@@ -17,8 +17,7 @@ Program program;
 
 int main(int argc, char** argv){
     setbuf(stdout, NULL);
-    
     parseArgs(argc, argv);
-
     program.execute(argv[1]);
+    return 0;
 }

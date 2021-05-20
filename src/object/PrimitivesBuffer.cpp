@@ -10,17 +10,17 @@ PrimitiveBuffer::PrimitiveBuffer()
 	buffer.resize(1);
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, double n, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, double n, std::string& name)
 {
 	buffer.at(currentScope).emplace_back(type, n, name.c_str());
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, std::string s, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, std::string s, std::string& name)
 {
 	buffer.at(currentScope).emplace_back(type, s, name.c_str());
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE* type, bool b, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, bool b, std::string& name)
 {
 	buffer.at(currentScope).emplace_back(type, b, name.c_str());
 }

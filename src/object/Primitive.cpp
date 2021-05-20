@@ -4,19 +4,19 @@
 
 #include <iostream>
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, double n, std::string name)
+Primitive::Primitive(const TYPE_PRIMITIVE type, double n, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.num = n;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, std::string s, std::string name)
+Primitive::Primitive(const TYPE_PRIMITIVE type, std::string s, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.string = s;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE* type, bool b, std::string name)
+Primitive::Primitive(const TYPE_PRIMITIVE type, bool b, std::string name)
 	: m_type(type), m_name(name)
 {
 	m_data.boolean = b;
@@ -25,7 +25,7 @@ Primitive::Primitive(const TYPE_PRIMITIVE* type, bool b, std::string name)
 Primitive::Primitive(const Primitive& r)
 	: m_type(r.m_type), m_name(r.m_name)
 {
-	switch(*r.m_type)
+	switch(r.m_type)
 	{
 		case TYPE_PRIMITIVE::TYPE_NUM:
 			m_data.num = r.m_data.num;
@@ -41,14 +41,13 @@ Primitive::Primitive(const Primitive& r)
 
 Primitive::~Primitive()
 {
-	delete m_type;
 }
 
 double Primitive::asNum()
 {
-	if(*m_type == TYPE_PRIMITIVE::TYPE_NUM)
+	if(m_type == TYPE_PRIMITIVE::TYPE_NUM)
 		return m_data.num;
-	else Log::CannotImplicitlyConvert(*m_type, TYPE_PRIMITIVE::TYPE_NUM);
+	else Log::CannotImplicitlyConvert(m_type, TYPE_PRIMITIVE::TYPE_NUM);
 	return 0;
 }
 
@@ -82,7 +81,7 @@ std::string& Primitive::getName()
 	return m_name;
 }
 
-const TYPE_PRIMITIVE* Primitive::getType()
+const TYPE_PRIMITIVE Primitive::getType()
 {
 	return m_type;
 }
