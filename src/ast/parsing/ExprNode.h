@@ -3,6 +3,8 @@
 #include "ast/lexing/Token.h"
 
 #include <variant>
+#include <memory>
+#include <iostream>
 
 enum class ExprNodeType
 {
@@ -17,14 +19,20 @@ struct ExprNode
 {
     struct binop
     {
-        ExprNode* left;
-        ExprNode* right;
+        std::shared_ptr<ExprNode> left;
+        std::shared_ptr<ExprNode> right;
         char op_type;
+
+        /*~binop()
+        {
+            delete right;
+            delete left;
+        }*/
     };
 
     struct unop
     {
-        ExprNode* left;
+        std::shared_ptr<ExprNode> left;
         char op_type;
     };
 

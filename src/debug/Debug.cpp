@@ -1,9 +1,12 @@
 #include "debug/Log.h"
 #include <string.h>
 #include <stdlib.h>
+#include <chrono>
 
 const char* version_string = "0.1.0";
-bool options[3] = {0,0,0};
+bool options[4] = {0,0,0,0};
+
+std::chrono::time_point<std::chrono::high_resolution_clock> s;
 
 void parseArgs(int argc, char** argv){
     if(argc == 1){ Log::Error(1,"No file name or arguments provided"); exit(1); }
@@ -20,6 +23,10 @@ void parseArgs(int argc, char** argv){
             }
             if(strcmp(argv[i], "--debug-printstatements") == 0){
                 options[2] = true;
+            }
+            if (strcmp(argv[i], "--debug-stopwatch") == 0) {
+                options[3] = true;
+                s = std::chrono::high_resolution_clock::now();
             }
         }
     }
@@ -39,4 +46,14 @@ void parseArgs(int argc, char** argv){
             "\n\n");
     }
     #pragma endregion
+}
+
+void DebugEnd()
+{
+    if (options[3])
+    {
+        auto e = std::chrono::high_resolution_clock::now();
+        double dur = std::chrono::duration<double, std::milli>(e - s).count();
+        Log::Print(3, "Completed in ", std::to_string(dur).c_str(), "ms");
+    }
 }

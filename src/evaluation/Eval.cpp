@@ -85,7 +85,7 @@ std::string Eval::EvalStringExpr(ExprNode* node)
         }
         if(std::get<3>(node->val).op_type == '+')
         {
-            std::string* concat = new std::string(std::string(EvalStringExpr(std::get<3>(node->val).left)) + std::string(EvalStringExpr(std::get<3>(node->val).right)));
+            std::string* concat = new std::string(std::string(EvalStringExpr(std::get<3>(node->val).left.get())) + std::string(EvalStringExpr(std::get<3>(node->val).right.get())));
             result = (*concat).c_str();
         }
         else
@@ -124,7 +124,7 @@ bool Eval::EvalBoolExpr(ExprNode* node)
     // }
     switch(std::get<3>(node->val).op_type){
         case '=':
-            if(Eval::EvalNumExpr(std::get<3>(node->val).left) == Eval::EvalNumExpr(std::get<3>(node->val).right)){
+            if(Eval::EvalNumExpr(std::get<3>(node->val).left.get()) == Eval::EvalNumExpr(std::get<3>(node->val).right.get())){
                 return true;
             }
             else {
@@ -132,7 +132,7 @@ bool Eval::EvalBoolExpr(ExprNode* node)
             }
             break;
         case '<':
-            if(Eval::EvalNumExpr(std::get<3>(node->val).left) < Eval::EvalNumExpr(std::get<3>(node->val).right)){
+            if(Eval::EvalNumExpr(std::get<3>(node->val).left.get()) < Eval::EvalNumExpr(std::get<3>(node->val).right.get())){
                 return true;
             }
             else {
@@ -140,7 +140,7 @@ bool Eval::EvalBoolExpr(ExprNode* node)
             }
             break;
         case '>':
-            if(Eval::EvalNumExpr(std::get<3>(node->val).left) > Eval::EvalNumExpr(std::get<3>(node->val).right)){
+            if(Eval::EvalNumExpr(std::get<3>(node->val).left.get()) > Eval::EvalNumExpr(std::get<3>(node->val).right.get())){
                 return true;
             }
             else {

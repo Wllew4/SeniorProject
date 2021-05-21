@@ -12,52 +12,18 @@ PrimitiveBuffer::PrimitiveBuffer()
 
 void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, double n, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, n, name.c_str());
+	buffer.at(currentScope).emplace_back(type, n, name);
 }
 
 void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, std::string s, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, s, name.c_str());
+	buffer.at(currentScope).emplace_back(type, s, name);
 }
 
 void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, bool b, std::string& name)
 {
-	buffer.at(currentScope).emplace_back(type, b, name.c_str());
+	buffer.at(currentScope).emplace_back(type, b, name);
 }
-
-// void PrimitiveBuffer::RemovePrimitive(Primitive* item)
-// {
-// 	buffer.erase(
-// 		std::remove_if(
-// 			buffer.begin(),
-// 			buffer.end(),
-// 			[&](Primitive* i){
-// 				if(i == item){
-// 					delete i;
-// 					return true;
-// 				}
-// 				return false;
-// 			}),
-// 		buffer.end());
-// }
-
-// void PrimitiveBuffer::RemovePrimitives(std::vector<Primitive> items)
-// {
-// 	buffer.erase(
-// 		std::remove_if(
-// 			buffer.begin(),
-// 			buffer.end(),
-// 			[&](Primitive* i){
-// 				for(auto j : items){
-// 					if(i == j){
-// 						delete i;
-// 						return true;
-// 					}
-// 				}
-// 				return false;
-// 			}),
-// 		buffer.end());
-// }
 
 void PrimitiveBuffer::IncreaseScope()
 {
@@ -68,21 +34,17 @@ void PrimitiveBuffer::IncreaseScope()
 void PrimitiveBuffer::DescreaseScope()
 {
 	buffer.pop_back();
+	buffer.shrink_to_fit();
 	currentScope--;
 }
 
 Primitive* PrimitiveBuffer::GetByName(std::string& name)
 {
-	//std::cout << name;
-	for(int i = 0; i < buffer.size(); i++)
-		for (int j = 0; j < buffer.at(i).size(); j++) {
-			//std::cout << buffer.at(i).at(j).getName();
+	for(unsigned int i = 0; i < buffer.size(); i++)
+		for (unsigned int j = 0; j < buffer.at(i).size(); j++) {
 			if (buffer.at(i).at(j).getName() == name)
 				return &buffer.at(i).at(j);
 		}
-			
-
-	std::cout << "no luckj";
 	//Log::UnrecognizedIdentifier(name);
 	return nullptr;
 }

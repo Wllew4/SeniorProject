@@ -22,22 +22,36 @@ struct StmtNode;
 
 struct FlowControl
 {
-    ExprNode* boolean;
+    std::unique_ptr<ExprNode> boolean;
     std::shared_ptr<StmtNode> body;
-};
 
+    /*~FlowControl()
+    {
+        delete boolean;
+    }*/
+};
+#include <iostream>
 struct FlowControlWithElse
 {
-    ExprNode* boolean;
+    std::unique_ptr<ExprNode> boolean;
     std::shared_ptr<StmtNode> body;
     std::shared_ptr<StmtNode> elsebody;
+
+    /*~FlowControlWithElse()
+    {
+        if (boolean != NULL)
+        {
+            std::cout << boolean;
+            delete boolean;
+        }  
+    }*/
 };
 
 struct StmtNode {
     StmtNodeType type;
 
     std::variant <
-        ExprNode*,
+        std::unique_ptr<ExprNode>,
         FlowControl,
         std::vector<std::shared_ptr<StmtNode>>,
         FlowControlWithElse,
@@ -49,10 +63,10 @@ struct StmtNode {
         data.emplace<0>(v);
     }
 
-    StmtNode(StmtNodeType t, FlowControl v)
+    StmtNode(StmtNodeType t, ExprNode* _b, std::shared_ptr<StmtNode> b)
     {
         type = t;
-        data.emplace<1>(v);
+        data.emplace<1>(FlowControl({ std::unique_ptr<ExprNode>(_b), b }));
     }
 
     StmtNode(StmtNodeType t, std::vector<std::shared_ptr<StmtNode>> d)
@@ -61,10 +75,10 @@ struct StmtNode {
         data.emplace<2>(d);
     }
 
-    StmtNode(StmtNodeType t, FlowControlWithElse d)
+    StmtNode(StmtNodeType t, ExprNode* _b, std::shared_ptr<StmtNode> b, std::shared_ptr<StmtNode> eb)
     {
         type = t;
-        data.emplace<3>(d);
+        data.emplace<3>(FlowControlWithElse({ std::unique_ptr<ExprNode>(_b), b, eb }));
     }
 
     StmtNode(StmtNodeType t, std::shared_ptr<StmtNode> d)
@@ -76,6 +90,14 @@ struct StmtNode {
     StmtNode(const StmtNode& o)
     {
         type = o.type;
-        data = o.data;
+        //data = o.data;
+    }
+
+    ~StmtNode()
+    {
+        /*if (data.index() == 0)
+        {
+            delete std::get<ExprNode*>(data);
+        }*/
     }
 };

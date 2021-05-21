@@ -60,13 +60,13 @@ ExprNode* Parser::parseUnopExpr(){
         ExprNode* oldexpr = expr;
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_UNOP;
-        expr->val.emplace<4>(ExprNode::unop({oldexpr, '-'}));
+        expr->val.emplace<4>(ExprNode::unop({ std::unique_ptr<ExprNode>(oldexpr), '-'}));
     }
     if(expr == NULL) expr = parseAtomicExpr();
     else {
         ExprNode* traversal = expr;
         while(std::get<4>(traversal->val).left != NULL){
-            traversal = std::get<4>(traversal->val).left;
+            traversal = std::get<4>(traversal->val).left.get();
         }
         //definitely breaks. need more abstraction.
         //std::get<4>(traversal->val).left = parseAtomicExpr();
@@ -90,7 +90,7 @@ ExprNode* Parser::parseBinopExpr(){
         ExprNode* right = parseUnopExpr();
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
-        expr->val.emplace<3>(ExprNode::binop({left, right, type}));
+        expr->val.emplace<3>(ExprNode::binop({std::shared_ptr<ExprNode>(left), std::shared_ptr<ExprNode>(right), type}));
     }
     return expr;
 }
@@ -109,7 +109,7 @@ ExprNode* Parser::parseExpr(){
         ExprNode* right = parseExpr();
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
-        expr->val.emplace<3>(ExprNode::binop({ left, right, type }));
+        expr->val.emplace<3>(ExprNode::binop({ std::shared_ptr<ExprNode>(left), std::shared_ptr<ExprNode>(right), type }));
     }
     return expr;
 }
@@ -134,7 +134,7 @@ std::unique_ptr<StmtNode> Parser::parseNode()
     if (t == StmtNodeType::STMT_WHILE)
     {
         parseNext();
-        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControl({ parseExpr(), std::shared_ptr<StmtNode>(parseNode()) })));
+        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr(), std::shared_ptr<StmtNode>(parseNode()) ));
     }
     if (t <= StmtNodeType::STMT_CONDITIONAL)
     {
@@ -143,7 +143,7 @@ std::unique_ptr<StmtNode> Parser::parseNode()
         auto stmt = std::shared_ptr<StmtNode>(parseNode());
         parseNext();
         auto elsestmt = std::shared_ptr<StmtNode>(parseNode());
-        return std::unique_ptr<StmtNode>(new StmtNode(t, FlowControlWithElse({ expr, stmt, elsestmt })));
+        return std::unique_ptr<StmtNode>(new StmtNode(t, expr, stmt, elsestmt ));
     }
     if (t == StmtNodeType::STMT_ELSE)
     {
