@@ -1,17 +1,15 @@
 #include "ast/parsing/Parser.h"
 #include "ast/lexing/Lexer.h"
 
-#include "execution/Exec.h"
+#include "execution/Execution.h"
 
-#include "debug/Debug.h"
+#include "debug/Callback.h"
+#include "debug/Log.h"
 
 void Parser::parseNext(){
     m_current = m_next;
     m_next = l.getNextToken();
-    Debug::callbackNewToken(m_next);
-    if(options[1]){
-        //Log::PrintToken(m_next.type, m_next.value.c_str());
-    }
+    Debug::Callback::NewToken(m_next);
 }
 
 void Parser::Init(char* file){
@@ -118,9 +116,6 @@ std::unique_ptr<StmtNode> Parser::parseNode()
 {
 
     StmtNodeType t = TokenTypeToStmtType(m_next.type);
-    if (options[2]) {
-        //Log::PrintStatement(t);
-    }
     
     if (t == StmtNodeType::STMT_EXPR)
     {
@@ -161,10 +156,6 @@ std::unique_ptr<StmtNode> Parser::parseNode()
         }
         //parseNext();
         return std::unique_ptr<StmtNode>(new StmtNode(t, stmts));
-    }
-
-    if (options[2]) {
-        //Log::PrintStatement(t);
     }
 
     return nullptr;

@@ -1,4 +1,4 @@
-#include "execution/Exec.h"
+#include "execution/Execution.h"
 #include "evaluation/Eval.h"
 #include "debug/Log.h"
 #include "ast/parsing/Parser.h"
@@ -34,7 +34,7 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
             }
             else if(std::get<0>(statement->data)->type == ExprNodeType::EXPR_ID)
             {
-                std::cout << buffer.GetByName(std::get<2>(std::get<0>(statement->data)->val))->asString();
+                std::cout << buffer.GetByName(std::get<2>(std::get<0>(statement->data)->val)).asString();
             }
 
             if(statement->type == StmtNodeType::STMT_PRINTLN){ std::cout << std::endl; }
@@ -102,12 +102,12 @@ void Exec::Execute(std::shared_ptr<StmtNode> statement)
 
         //Expression Statements
         case StmtNodeType::STMT_EXPR:
-            switch(buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->getType()){
+            switch(buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val)).getType()){
                 case TYPE_PRIMITIVE::TYPE_NUM:
-                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalNumExpr(std::get<3>(std::get<0>(statement->data)->val).right.get()));
+                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val)).setValue(Eval::EvalNumExpr(std::get<3>(std::get<0>(statement->data)->val).right.get()));
                     break;
                 case TYPE_PRIMITIVE::TYPE_STRING:
-                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val))->setValue(Eval::EvalStringExpr(std::get<3>(std::get<0>(statement->data)->val).right.get()));
+                    buffer.GetByName(std::get<2>(std::get<3>(std::get<0>(statement->data)->val).left->val)).setValue(Eval::EvalStringExpr(std::get<3>(std::get<0>(statement->data)->val).right.get()));
                     break;
             }
             break;

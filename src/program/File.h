@@ -1,12 +1,15 @@
 #pragma once
 
-#include "execution/Exec.h"
+#include "execution/Execution.h"
 
-class File {
-	private:
+class File
+{
+private:
 		char* m_file;
-		Exec exe;
-	public:
-    void load(char* file);
-    void execute();
+		Exec m_exe;
+
+public:
+	~File();
+    void Load(char* file);
+    void Execute();
 };

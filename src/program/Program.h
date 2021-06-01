@@ -3,14 +3,13 @@
 #include "program/File.h"
 #include "object/PrimitivesBuffer.h"
 
-class Program {
+class Program
+{
 	private:
-		PrimitiveBuffer objbuffer;
-		File mainFile;
+		PrimitiveBuffer m_objectBuffer;
+		File m_mainFile;
 
 	public:
-		void execute(char* main);
+		void Execute(char* main);
 		PrimitiveBuffer& GetBuffer();
 };
-
-extern Program program;

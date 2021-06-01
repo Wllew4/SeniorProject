@@ -1,24 +1,16 @@
 /*      Janelle Interpreter
  *      Created by William Janelle
- *      Bedford High School Senior Project
- * 
- *      TO-DO:
- *          - PEMDAS
- *          - Rendering
  */
 
-#pragma warning(disable:4996)
-#include <string>
-
-#include "debug/Debug.h"
 #include "program/Program.h"
+#include "debug/Debug.h"
 
 Program program;
 
 int main(int argc, char** argv)
 {
-    Debug::parseArgs(argc, argv);
-    Debug::Timer t ("Program Execution Time", options[3]);
-    program.execute(argv[1]);
+    Debug::Init(argc, argv);
+
+    program.Execute(argv[1]);
     return 0;
 }

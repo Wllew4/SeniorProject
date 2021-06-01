@@ -3,7 +3,6 @@
 #include "debug/Log.h"
 #include <string>
 #include <string.h>
-
 #include <iostream>
 
 double Eval::EvalNumExpr(ExprNode* node)
@@ -17,14 +16,14 @@ double Eval::EvalNumExpr(ExprNode* node)
         if(std::get<3>(node->val).left->type == ExprNodeType::EXPR_ID)
         {
             left.type = ExprNodeType::EXPR_NUM;
-            left.val.emplace<0>(buffer.GetByName(std::get<2>(std::get<3>(node->val).left->val))->asNum());
+            left.val.emplace<0>(buffer.GetByName(std::get<2>(std::get<3>(node->val).left->val)).asNum());
         }
         else left = *std::get<3>(node->val).left;
 
         if(std::get<3>(node->val).right->type == ExprNodeType::EXPR_ID)
         {
             right.type = ExprNodeType::EXPR_NUM;
-            right.val.emplace<0>(buffer.GetByName(std::get<2>(std::get<3>(node->val).right->val))->asNum());
+            right.val.emplace<0>(buffer.GetByName(std::get<2>(std::get<3>(node->val).right->val)).asNum());
         }
         else right = *std::get<3>(node->val).right;
         
@@ -52,13 +51,13 @@ double Eval::EvalNumExpr(ExprNode* node)
     else if(node->type == ExprNodeType::EXPR_UNOP)
     {
         left.type = ExprNodeType::EXPR_NUM;
-        left.val.emplace<0>(-buffer.GetByName(std::get<2>(node->val))->asNum());
+        left.val.emplace<0>(-buffer.GetByName(std::get<2>(node->val)).asNum());
         result = std::get<0>(left.val);
     }
     else if(node->type == ExprNodeType::EXPR_ID)
     {
         left.type = ExprNodeType::EXPR_NUM;
-        left.val.emplace<0>(buffer.GetByName(std::get<2>(node->val))->asNum());
+        left.val.emplace<0>(buffer.GetByName(std::get<2>(node->val)).asNum());
         result = std::get<0>(left.val);
     }
     else
@@ -76,12 +75,12 @@ std::string Eval::EvalStringExpr(ExprNode* node)
         if(std::get<3>(node->val).left->type == ExprNodeType::EXPR_ID)
         {
             std::get<3>(node->val).left->type = ExprNodeType::EXPR_STRING;
-            std::get<1>(std::get<3>(node->val).left->val) = buffer.GetByName(std::get<2>(std::get<3>(node->val).left->val))->asString();
+            std::get<1>(std::get<3>(node->val).left->val) = buffer.GetByName(std::get<2>(std::get<3>(node->val).left->val)).asString();
         }
         if(std::get<3>(node->val).right->type == ExprNodeType::EXPR_ID)
         {
             std::get<3>(node->val).right->type = ExprNodeType::EXPR_STRING;
-            std::get<1>(std::get<3>(node->val).right->val) = buffer.GetByName(std::get<2>(std::get<3>(node->val).right->val))->asString();
+            std::get<1>(std::get<3>(node->val).right->val) = buffer.GetByName(std::get<2>(std::get<3>(node->val).right->val)).asString();
         }
         if(std::get<3>(node->val).op_type == '+')
         {
@@ -98,7 +97,7 @@ std::string Eval::EvalStringExpr(ExprNode* node)
         if(node->type == ExprNodeType::EXPR_ID)
         {
             node->type = ExprNodeType::EXPR_STRING;
-            std::get<1>(node->val) = buffer.GetByName(std::get<1>(node->val))->asString();
+            std::get<1>(node->val) = buffer.GetByName(std::get<1>(node->val)).asString();
         }
         result = std::get<1>(node->val);
     }

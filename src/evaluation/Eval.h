@@ -4,6 +4,8 @@
 #include "object/Primitive.h"
 #include "program/Program.h"
 
+extern Program program;
+
 namespace Eval {
     double      EvalNumExpr     (ExprNode* node);
     std::string EvalStringExpr  (ExprNode* node);

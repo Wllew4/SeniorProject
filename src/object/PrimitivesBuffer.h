@@ -4,8 +4,8 @@
 
 class PrimitiveBuffer {
 	private:
-		std::vector<std::vector<Primitive>> buffer;
-		int currentScope;
+		std::vector<std::vector<Primitive>> m_buffer;
+		int m_currentScope;
 	public:
 		PrimitiveBuffer();
 		void AddPrimitive(const TYPE_PRIMITIVE type, double n, std::string& name);
@@ -13,5 +13,5 @@ class PrimitiveBuffer {
 		void AddPrimitive(const TYPE_PRIMITIVE type, bool b, std::string& name);
 		void IncreaseScope();
 		void DescreaseScope();
-		Primitive* GetByName(std::string& name);
+		Primitive& GetByName(std::string& name);
 };
