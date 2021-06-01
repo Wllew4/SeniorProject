@@ -2,9 +2,13 @@
 
 #include "ast/lexing/Token.h"
 
-namespace Lexer
+class Lexer
 {
-    void Init(char* file);
-    Token getNextToken();
-    std::string getLine();
-}
+	private:
+		char* m_position;
+
+	public:
+		void Init(char* file);
+	    Token getNextToken();
+	    static std::string getLine();
+};

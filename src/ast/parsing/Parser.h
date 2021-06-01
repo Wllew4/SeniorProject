@@ -2,15 +2,17 @@
 
 #include "ast/lexing/Token.h"
 #include "ast/parsing/StmtNode.h"
+#include "ast/lexing/Lexer.h"
 
 #include <memory>
 
-namespace Parser {
-    namespace {
-        Token m_next;
-        Token m_current;
-    }
+class Parser {
+    private:
+      Token m_next;
+      Token m_current;
+      Lexer l;
     
+    public:
     void parseNext();
 
     void Init(char* file);
@@ -28,4 +30,4 @@ namespace Parser {
     std::unique_ptr<StmtNode> parseNode();
 
     StmtNodeType TokenTypeToStmtType(TokenType& t);
-}
+};

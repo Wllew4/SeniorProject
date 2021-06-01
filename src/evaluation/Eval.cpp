@@ -90,7 +90,7 @@ std::string Eval::EvalStringExpr(ExprNode* node)
         }
         else
         {
-            Log::UnexpectedToken(&std::get<3>(node->val).op_type);
+            //Log::UnexpectedToken(&std::get<3>(node->val).op_type);
         }
     }
     else

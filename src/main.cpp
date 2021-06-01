@@ -9,17 +9,16 @@
 
 #pragma warning(disable:4996)
 #include <string>
-#include <chrono>
 
 #include "debug/Debug.h"
 #include "program/Program.h"
 
 Program program;
 
-int main(int argc, char** argv){
-    setbuf(stdout, NULL);
-    parseArgs(argc, argv);
+int main(int argc, char** argv)
+{
+    Debug::parseArgs(argc, argv);
+    Debug::Timer t ("Program Execution Time", options[3]);
     program.execute(argv[1]);
-    DebugEnd();
     return 0;
 }

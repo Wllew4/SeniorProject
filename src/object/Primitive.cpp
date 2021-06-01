@@ -47,7 +47,7 @@ double Primitive::asNum()
 {
 	if(m_type == TYPE_PRIMITIVE::TYPE_NUM)
 		return m_data.num;
-	else Log::CannotImplicitlyConvert(m_type, TYPE_PRIMITIVE::TYPE_NUM);
+	//else Log::CannotImplicitlyConvert(m_type, TYPE_PRIMITIVE::TYPE_NUM);
 	return 0;
 }
 

@@ -1,5 +1,5 @@
 sourceFile = './examples/FizzBuzz.jan'
-flags = '--debug-stopwatch'
+flags = ''
 
 
 import os

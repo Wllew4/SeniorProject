@@ -3,19 +3,19 @@
 
 #include "execution/Exec.h"
 
-#include "debug/Log.h"
 #include "debug/Debug.h"
 
 void Parser::parseNext(){
     m_current = m_next;
-    m_next = Lexer::getNextToken();
+    m_next = l.getNextToken();
+    Debug::callbackNewToken(m_next);
     if(options[1]){
-        Log::PrintToken(m_next.type, m_next.value.c_str());
+        //Log::PrintToken(m_next.type, m_next.value.c_str());
     }
 }
 
 void Parser::Init(char* file){
-    Lexer::Init(file);
+    l.Init(file);
     parseNext();
 }
 
@@ -48,7 +48,7 @@ ExprNode* Parser::parseAtomicExpr(){
             return stringexpr;
         }
         default:
-            Log::UnexpectedToken(m_next.value.c_str());
+            Debug::Log::UnhandledException(201) << "Unexpected token: " << m_current.value << '\n';
             exit(0);
     }
 }
@@ -113,13 +113,13 @@ ExprNode* Parser::parseExpr(){
     }
     return expr;
 }
-#include <iostream>
+
 std::unique_ptr<StmtNode> Parser::parseNode()
 {
 
     StmtNodeType t = TokenTypeToStmtType(m_next.type);
     if (options[2]) {
-        Log::PrintStatement(t);
+        //Log::PrintStatement(t);
     }
     
     if (t == StmtNodeType::STMT_EXPR)
@@ -164,7 +164,7 @@ std::unique_ptr<StmtNode> Parser::parseNode()
     }
 
     if (options[2]) {
-        Log::PrintStatement(t);
+        //Log::PrintStatement(t);
     }
 
     return nullptr;

@@ -6,18 +6,17 @@
 #include <iostream>
 #include <string>
 
-char* m_position;
-int m_line = 1;
+int g_line = 1;
 
 void Lexer::Init(char* file)
 {
-    m_line = 1;
+    g_line = 1;
     m_position = file;
 }
 
 std::string Lexer::getLine()
 {
-    return std::to_string(m_line);
+    return std::to_string(g_line);
 }
 
 Token Lexer::getNextToken(){
@@ -30,7 +29,7 @@ Token Lexer::getNextToken(){
                 break;
             case '\n':
                 m_position++;
-                m_line++;
+                g_line++;
                 break;
             case '+':
                 m_position++;
@@ -100,31 +99,24 @@ Token Lexer::getNextToken(){
                     length++;
                     std::string value = std::string(start, start + length);
                     if(value == "println"){
-                        m_position++;
                         return { TokenType::T_PRINTLN, value };
                     }
                     if(value == "print"){
-                        m_position++;
                         return { TokenType::T_PRINT, value };
                     }
                     if(value == "num"){
-                        m_position++;
                         return { TokenType::T_NUMDECL, value };
                     }
                     if(value == "string"){
-                        m_position++;
                         return { TokenType::T_STRINGDECL, value };
                     }
                     if(value == "if"){
-                        m_position++;
                         return { TokenType::T_IF, value };
                     }
                     if(value == "else"){
-                        m_position++;
                         return { TokenType::T_ELSE, value };
                     }
                     if(value == "while"){
-                        m_position++;
                         return { TokenType::T_WHILE, value };
                     }
                     else {

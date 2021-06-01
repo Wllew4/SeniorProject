@@ -23,19 +23,19 @@ void File::load(char* file){
         int readsize = fread(m_file, sizeof(char), bufsize + 1, f);
         if(bufsize != readsize){
             free(m_file);
-            Log::Error(3,"Could not allocate memory for file ", file, "\n");
+            //Log::Error(3,"Could not allocate memory for file ", file, "\n");
             exit(1);
         }
         fclose(f);
         if(options[0]){
-            Log::Print(5,"DEBUG Print source file: ", file, "\n", m_file, "\n\n");
+            //Log::Print(5,"DEBUG Print source file: ", file, "\n", m_file, "\n\n");
         }
     } else {
-        Log::Error(3,"Could not find file ", file, "\n");
+        //Log::Error(3,"Could not find file ", file, "\n");
         exit(1);
     }
 }
 
 void File::execute(){
-	Exec::Init(m_file);
+	exe.Init(m_file);
 }

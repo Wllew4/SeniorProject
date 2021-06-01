@@ -9,12 +9,12 @@ PrimitiveBuffer& buffer = program.GetBuffer();
 
 void Exec::Init(char* file)
 {
-    Parser::Init(file);
+    p.Init(file);
 
-    while (!Parser::IsDone()) {
-        std::shared_ptr<StmtNode> stmt = Parser::parseNode();
+    while (!p.IsDone()) {
+        std::shared_ptr<StmtNode> stmt = p.parseNode();
         Execute(stmt);
-        Parser::parseNext();
+        p.parseNext();
     }
 }
 
