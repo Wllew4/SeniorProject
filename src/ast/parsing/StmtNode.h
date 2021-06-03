@@ -1,5 +1,7 @@
 #pragma once
 
+//  Still needs name restandardization
+
 #include "ast/parsing/ExprNode.h"
 
 #include <vector>
@@ -24,27 +26,13 @@ struct FlowControl
 {
     std::unique_ptr<ExprNode> boolean;
     std::shared_ptr<StmtNode> body;
-
-    /*~FlowControl()
-    {
-        delete boolean;
-    }*/
 };
-#include <iostream>
+
 struct FlowControlWithElse
 {
     std::unique_ptr<ExprNode> boolean;
     std::shared_ptr<StmtNode> body;
     std::shared_ptr<StmtNode> elsebody;
-
-    /*~FlowControlWithElse()
-    {
-        if (boolean != NULL)
-        {
-            std::cout << boolean;
-            delete boolean;
-        }  
-    }*/
 };
 
 struct StmtNode {

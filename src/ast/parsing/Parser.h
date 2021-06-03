@@ -1,33 +1,31 @@
 #pragma once
 
+#include "ast/lexing/Lexer.h"
 #include "ast/lexing/Token.h"
 #include "ast/parsing/StmtNode.h"
-#include "ast/lexing/Lexer.h"
 
 #include <memory>
 
 class Parser {
-    private:
-      Token m_next;
-      Token m_current;
-      Lexer l;
-    
-    public:
-    void parseNext();
+public:
+    void ParseNext();
 
-    void Init(char* file);
+    void Init(char* _file);
 
     bool IsDone();
 
-    ExprNode* parseAtomicExpr();
-    ExprNode* parseUnopExpr();
-    ExprNode* parseBinopExpr();
+    ExprNode* ParseAtomicExpr();
+    ExprNode* ParseUnopExpr();
+    ExprNode* ParseBinopExpr();
 
-    //ExprNode* parseBooleanExpr();
+    ExprNode* ParseExpr();
 
-    ExprNode* parseExpr();
+    std::unique_ptr<StmtNode> ParseNode();
 
-    std::unique_ptr<StmtNode> parseNode();
-
-    StmtNodeType TokenTypeToStmtType(TokenType& t);
+    StmtNodeType TokenTypeToStmtType(TokenType& _tokenType);
+    
+private:
+      Token m_next;
+      Token m_current;
+      Lexer m_lexer;
 };

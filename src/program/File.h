@@ -4,12 +4,13 @@
 
 class File
 {
-private:
-		char* m_file;
-		Exec m_exe;
-
 public:
+	File(PrimitiveBuffer& _program);
 	~File();
-    void Load(char* file);
+    void Load(char* _file);
     void Execute();
+
+private:
+	char* m_file;
+	Exec m_exe;
 };

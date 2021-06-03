@@ -1,14 +1,17 @@
 #pragma once
 
-#include "ast/parsing/StmtNode.h"
 #include "ast/parsing/Parser.h"
+#include "ast/parsing/StmtNode.h"
+#include "evaluation/Eval.h"
 
 class Exec
 {
-	public:
-	void Init(char* file);
+public:
+	Exec(PrimitiveBuffer& _program);
+	void Init(char* _file);
 
-	private:
-	Parser p;
-	void Execute(std::shared_ptr<StmtNode> statement);
+private:
+	Parser m_parser;
+	Eval m_eval;
+	void Execute(std::shared_ptr<StmtNode> _statement);
 };

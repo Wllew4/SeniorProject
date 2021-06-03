@@ -6,46 +6,46 @@
 
 Debug& Debug::GetInstance()
 {
-    static Debug instance;
-    return instance;
+    static Debug s_instance;
+    return s_instance;
 }
 
-void Debug::Init(int argc, char** argv)
+void Debug::Init(int _argc, char** _argv)
 {
-    GetInstance().InternalInit(argc, argv);
+    GetInstance().InternalInit(_argc, _argv);
 }
 
 const char* Debug::GetVersionString()
 {
-    return GetInstance().version_string;
+    return VERSION_STRING;
 }
 
-bool Debug::GetOption(int index)
+bool Debug::GetOption(int _index)
 {
-    index = std::clamp(index, 0, DebugOptionListSize);
-    return GetInstance().b_options[index];
+    _index = std::clamp(_index, 0, DEBUG_OPTION_LIST_SIZE);
+    return GetInstance().b_options[_index];
 }
 
-void Debug::InternalInit(int argc, char** argv)
+void Debug::InternalInit(int _argc, char** _argv)
 {
-    if (argc == 1)
+    if (_argc == 1)
     {
         Debug::Log::Crash(113) << "No file name or arguments provided\n";
         exit(113);
     }
-    for(int i = 1; i < argc; i++)
+    for(int i = 1; i < _argc; i++)
     {
-        if(argv[i][0] == '-')
+        if(_argv[i][0] == '-')
         {
-            if(strcmp(argv[i], "--verify") == 0)
-                Print << "Janelle Interpreter version " << version_string << '\n';
-            if(strcmp(argv[i], "--debug-printfile") == 0)
+            if(strcmp(_argv[i], "--verify") == 0)
+                Debug::Log::Print() << "Janelle Interpreter version " << VERSION_STRING << '\n';
+            if(strcmp(_argv[i], "--debug-printfile") == 0)
                 b_options[0] = true;
-            if(strcmp(argv[i], "--debug-printtokens") == 0)
+            if(strcmp(_argv[i], "--debug-printtokens") == 0)
                 b_options[1] = true;
-            if(strcmp(argv[i], "--debug-printstatements") == 0)
+            if(strcmp(_argv[i], "--debug-printstatements") == 0)
                 b_options[2] = true;
-            if (strcmp(argv[i], "--debug-stopwatch") == 0)
+            if (strcmp(_argv[i], "--debug-stopwatch") == 0)
                 b_options[3] = true;
         }
     }
@@ -55,12 +55,15 @@ void Debug::InternalInit(int argc, char** argv)
         if(i)
             enabledDebuggerC++;
 
-    if(enabledDebuggerC > 0)
-        Print << "Running Debugger "
+    if (enabledDebuggerC > 0)
+    {
+        Debug::Log::Print() << "Janelle Interpreter version " << VERSION_STRING << '\n';
+        Debug::Log::Print() << "Running Debugger"
             << (enabledDebuggerC > 1 ? "s:" : ":")
             << (b_options[0] ? " Print Source" : "")
             << (b_options[1] ? " Print Tokens" : "")
             << (b_options[2] ? " Print Statements" : "")
             << (b_options[3] ? " Stopwatch" : "")
             << "\n\n";
+    }
 }

@@ -1,15 +1,17 @@
 #pragma once
 
-#include "program/File.h"
 #include "object/PrimitivesBuffer.h"
+#include "program/File.h"
 
 class Program
 {
-	private:
-		PrimitiveBuffer m_objectBuffer;
-		File m_mainFile;
+public:
+	Program();
 
-	public:
-		void Execute(char* main);
-		PrimitiveBuffer& GetBuffer();
+	void Execute(char* _main);
+	PrimitiveBuffer& GetBuffer();
+
+private:
+	File m_mainFile;
+	PrimitiveBuffer m_objectBuffer;
 };

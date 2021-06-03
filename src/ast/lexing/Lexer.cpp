@@ -8,20 +8,23 @@
 
 int g_line = 1;
 
-void Lexer::Init(char* file)
+void Lexer::Init(char* _file)
 {
     g_line = 1;
-    m_position = file;
+    m_position = _file;
 }
 
-std::string Lexer::getLine()
+std::string Lexer::GetLine()
 {
     return std::to_string(g_line);
 }
 
-Token Lexer::getNextToken(){
-    while(true){
-        switch(*m_position){
+Token Lexer::GetNextToken()
+{
+    while(true)
+    {
+        switch(*m_position)
+        {
             case ' ':
             case '\r':
             case '\t':
@@ -88,46 +91,42 @@ Token Lexer::getNextToken(){
             
             default:
 
-                if(isalpha(*m_position)){
+                if(isalpha(*m_position))
+                {
                     char* start = m_position;
                     int length = 0;
                     m_position++;
-                    while(isalpha(*m_position)){
+                    while(isalpha(*m_position))
+                    {
                         length++;
                         m_position++;
                     }
                     length++;
                     std::string value = std::string(start, start + length);
-                    if(value == "println"){
+                    if(value == "println")
                         return { TokenType::T_PRINTLN, value };
-                    }
-                    if(value == "print"){
+                    if(value == "print")
                         return { TokenType::T_PRINT, value };
-                    }
-                    if(value == "num"){
+                    if(value == "num")
                         return { TokenType::T_NUMDECL, value };
-                    }
-                    if(value == "string"){
+                    if(value == "string")
                         return { TokenType::T_STRINGDECL, value };
-                    }
-                    if(value == "if"){
+                    if(value == "if")
                         return { TokenType::T_IF, value };
-                    }
-                    if(value == "else"){
+                    if(value == "else")
                         return { TokenType::T_ELSE, value };
-                    }
-                    if(value == "while"){
+                    if(value == "while")
                         return { TokenType::T_WHILE, value };
-                    }
-                    else {
+                    else
                         return { TokenType::T_ID, value };
-                    }
                 }
-                if(isdigit(*m_position)){
+                if(isdigit(*m_position))
+                {
                     char* start = m_position;
                     int length = 0;
                     m_position++;
-                    while(isdigit(*m_position)){
+                    while(isdigit(*m_position))
+                    {
                         length++;
                         m_position++;
                     }

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "debug/Debug.h"
 #include "ast/lexing/Token.h"
+#include "debug/Debug.h"
 
 class Debug::Callback
 {
 public:
-	static void LoadFile(const char* fileContents);
-	static void NewToken(Token& t);
+	static void LoadFile(const char* _fileContents);
+	static void NewToken(Token& _token);
 };

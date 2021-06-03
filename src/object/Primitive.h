@@ -2,10 +2,10 @@
 
 #include <string>
 
-enum TYPE_PRIMITIVE {
-	TYPE_NUM,
-	TYPE_STRING,
-	TYPE_BOOL
+enum PrimitiveType {
+	Num,
+	String,
+	Bool
 };
 
 union Data {
@@ -17,23 +17,28 @@ union Data {
 };
 
 class Primitive {
-	private:
-		const TYPE_PRIMITIVE m_type;
-		Data m_data;
-		std::string m_name;
-	public:
-		Primitive(const TYPE_PRIMITIVE type, double n,		std::string name);
-		Primitive(const TYPE_PRIMITIVE type, std::string s,std::string name);
-		Primitive(const TYPE_PRIMITIVE type, bool b,		std::string name);
-		Primitive(const Primitive& r);
-		~Primitive();
-		std::string asString();
-		double asNum();
-		bool asBool();
-		void setValue(double val);
-		void setValue(std::string val);
-		void setValue(bool val);
-		std::string& getName();
-		const TYPE_PRIMITIVE getType();
-		Data& getData();
+public:
+	Primitive(const Primitive& _result);
+	~Primitive();
+
+	Primitive(const PrimitiveType _type, double _num, std::string _name);
+	Primitive(const PrimitiveType _type, std::string _string, std::string _name);
+	Primitive(const PrimitiveType _type, bool _bool, std::string _name);
+
+	std::string AsString();
+	double		AsNum();
+	bool		AsBool();
+
+	void SetValue(double _val);
+	void SetValue(std::string _val);
+	void SetValue(bool _val);
+
+	std::string&		GetName();
+	const PrimitiveType GetType();
+	Data&				GetData();
+
+private:
+	const PrimitiveType m_type;
+	Data m_data;
+	std::string m_name;
 };

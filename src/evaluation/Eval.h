@@ -1,20 +1,22 @@
 #pragma once
 
 #include "ast/parsing/ExprNode.h"
-#include "object/Primitive.h"
-#include "program/Program.h"
+#include "object/PrimitivesBuffer.h"
 
-extern Program program;
+class Eval
+{
+public:
+    Eval(PrimitiveBuffer& _program);
 
-namespace Eval {
-    double      EvalNumExpr     (ExprNode* node);
-    std::string EvalStringExpr  (ExprNode* node);
-    bool        EvalBoolExpr    (ExprNode* node);
+    PrimitiveBuffer& GetBuffer();
 
-    std::string toString        (Primitive* val);
-    bool        toBool          (Primitive* val);
+    double      EvalNumExpr     (ExprNode* _node);
+    std::string EvalStringExpr  (ExprNode* _node);
+    bool        EvalBoolExpr    (ExprNode* _node);
 
-    namespace {
-        PrimitiveBuffer& buffer = program.GetBuffer();
-    }
+    static std::string ToString (Primitive* _val);
+    static bool        ToBool   (Primitive* _val);
+
+private:
+    PrimitiveBuffer& m_buffer;
 };

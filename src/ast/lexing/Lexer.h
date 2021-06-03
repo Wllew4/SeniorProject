@@ -4,11 +4,11 @@
 
 class Lexer
 {
-	private:
-		char* m_position;
+public:
+	void Init(char* _file);
+	Token GetNextToken();
+	static std::string GetLine();
 
-	public:
-		void Init(char* file);
-	    Token getNextToken();
-	    static std::string getLine();
+private:
+	char* m_position;
 };

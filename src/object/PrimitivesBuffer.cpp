@@ -1,6 +1,7 @@
 #include "object/PrimitivesBuffer.h"
-#include "debug/Log.h"
+
 #include "ast/lexing/Lexer.h"
+#include "debug/Log.h"
 
 PrimitiveBuffer::PrimitiveBuffer()
 {
@@ -8,19 +9,19 @@ PrimitiveBuffer::PrimitiveBuffer()
 	m_buffer.resize(1);
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, double n, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const PrimitiveType _type, double _num, std::string& _name)
 {
-	m_buffer.at(m_currentScope).emplace_back(type, n, name);
+	m_buffer.at(m_currentScope).emplace_back(_type, _num, _name);
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, std::string s, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const PrimitiveType _type, std::string _string, std::string& _name)
 {
-	m_buffer.at(m_currentScope).emplace_back(type, s, name);
+	m_buffer.at(m_currentScope).emplace_back(_type, _string, _name);
 }
 
-void PrimitiveBuffer::AddPrimitive(const TYPE_PRIMITIVE type, bool b, std::string& name)
+void PrimitiveBuffer::AddPrimitive(const PrimitiveType _type, bool _bool, std::string& _name)
 {
-	m_buffer.at(m_currentScope).emplace_back(type, b, name);
+	m_buffer.at(m_currentScope).emplace_back(_type, _bool, _name);
 }
 
 void PrimitiveBuffer::IncreaseScope()
@@ -36,16 +37,17 @@ void PrimitiveBuffer::DescreaseScope()
 	m_currentScope--;
 }
 
-Primitive& PrimitiveBuffer::GetByName(std::string& name)
+Primitive& PrimitiveBuffer::GetByName(std::string& _name)
 {
 	for (unsigned int i = m_buffer.size() - 1; i >= 0; i--)
 	{
 		for (unsigned int j = 0; j < m_buffer.at(i).size(); j++)
-			if (m_buffer.at(i).at(j).getName() == name)
+			if (m_buffer.at(i).at(j).GetName() == _name)
 				return m_buffer.at(i).at(j);
 	}
 
 	Debug::Log::UnhandledException(201)
 		<< "Unrecognized identifier: "
-		<< name << '\n';
+		<< _name << '\n';
+	exit(201);
 }

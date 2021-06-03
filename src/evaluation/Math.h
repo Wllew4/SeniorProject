@@ -1,5 +1,13 @@
 #pragma once
 
-extern double PI;
+class Math
+{
+public:
+	Math(const Math&) = delete;
+	const Math& GetInstance();
 
-double modulus (double x, double y);
+	static double Modulus(double x, double y);
+
+private:
+	Math() {}
+};

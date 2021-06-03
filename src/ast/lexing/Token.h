@@ -1,7 +1,8 @@
 #pragma once
 
+//  Still needs name restandardization
+
 #include <string>
-#include <string.h>
 
 enum TokenType
 {
@@ -29,36 +30,10 @@ enum TokenType
     T_EOF
 };
 
-
-
 struct Token
 {
     TokenType type;
     std::string value;
     
-    std::string toString()
-    {
-    	constexpr const char* tokentypes[] = {
-		    "StrDecl",	    "NumDecl",
-		    "StrLit",       "NumLit",
-		    "ID",           "Print",
-		    "Println",      "EQ",
-		    "Plus",         "Minus",
-		    "Mult",         "Div",
-		    "Modulus",      "If",
-		    "Else",         "While",
-		    "LThan",        "GThan",
-		    "OpBrace",      "ClBrace",
-		    "Semicolon",    "EOF"
-		};
-		
-    	std::string out = "TOKEN:\tType: ";
-    	out += tokentypes[type];
-    	out += strlen(tokentypes[type]) < 6 ?
-    		"\t\t" : "\t";
-    	out += "Value: ";
-    	out += value;
-    	  	
-    	return out;
-    }
+    std::string ToString();
 };

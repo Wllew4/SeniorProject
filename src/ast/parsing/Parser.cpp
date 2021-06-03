@@ -1,20 +1,18 @@
 #include "ast/parsing/Parser.h"
 #include "ast/lexing/Lexer.h"
 
-#include "execution/Execution.h"
-
 #include "debug/Callback.h"
 #include "debug/Log.h"
 
-void Parser::parseNext(){
+void Parser::ParseNext(){
     m_current = m_next;
-    m_next = l.getNextToken();
+    m_next = m_lexer.GetNextToken();
     Debug::Callback::NewToken(m_next);
 }
 
-void Parser::Init(char* file){
-    l.Init(file);
-    parseNext();
+void Parser::Init(char* _file){
+    m_lexer.Init(_file);
+    ParseNext();
 }
 
 bool Parser::IsDone()
@@ -22,8 +20,8 @@ bool Parser::IsDone()
     return m_next.type == TokenType::T_EOF;
 }
 
-ExprNode* Parser::parseAtomicExpr(){
-    parseNext();
+ExprNode* Parser::ParseAtomicExpr(){
+    ParseNext();
     switch(m_current.type){
         case TokenType::T_ID: {
             ExprNode* idexpr = new ExprNode();
@@ -51,29 +49,29 @@ ExprNode* Parser::parseAtomicExpr(){
     }
 }
 
-ExprNode* Parser::parseUnopExpr(){
+ExprNode* Parser::ParseUnopExpr(){
     ExprNode* expr = NULL;
     while(m_next.type == T_MINUS){
-        parseNext();
+        ParseNext();
         ExprNode* oldexpr = expr;
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_UNOP;
         expr->val.emplace<4>(ExprNode::unop({ std::unique_ptr<ExprNode>(oldexpr), '-'}));
     }
-    if(expr == NULL) expr = parseAtomicExpr();
+    if(expr == NULL) expr = ParseAtomicExpr();
     else {
         ExprNode* traversal = expr;
         while(std::get<4>(traversal->val).left != NULL){
             traversal = std::get<4>(traversal->val).left.get();
         }
         //definitely breaks. need more abstraction.
-        //std::get<4>(traversal->val).left = parseAtomicExpr();
+        //std::get<4>(traversal->val).left = ParseAtomicExpr();
     }
     return expr;
 }
 
-ExprNode* Parser::parseBinopExpr(){
-    ExprNode* expr = parseUnopExpr();
+ExprNode* Parser::ParseBinopExpr(){
+    ExprNode* expr = ParseUnopExpr();
     while(m_next.type == T_PLUS || m_next.type == T_MINUS || m_next.type == T_MULT || m_next.type == T_DIV || m_next.type == T_MODULUS){
         char type;
         switch(m_next.type){
@@ -83,9 +81,9 @@ ExprNode* Parser::parseBinopExpr(){
             case T_DIV: type = '/'; break;
             case T_MODULUS: type = '%'; break;
         }
-        parseNext();
+        ParseNext();
         ExprNode* left = expr;
-        ExprNode* right = parseUnopExpr();
+        ExprNode* right = ParseUnopExpr();
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
         expr->val.emplace<3>(ExprNode::binop({std::shared_ptr<ExprNode>(left), std::shared_ptr<ExprNode>(right), type}));
@@ -93,8 +91,8 @@ ExprNode* Parser::parseBinopExpr(){
     return expr;
 }
 
-ExprNode* Parser::parseExpr(){
-    ExprNode* expr = parseBinopExpr();
+ExprNode* Parser::ParseExpr(){
+    ExprNode* expr = ParseBinopExpr();
     if(m_next.type == T_EQ || m_next.type == T_LESSTHAN || m_next.type == T_GREATERTHAN){
         char type;
         switch(m_next.type){
@@ -102,9 +100,9 @@ ExprNode* Parser::parseExpr(){
             case T_LESSTHAN: type = '<'; break;
             case T_GREATERTHAN: type = '>'; break;
         }
-        parseNext();
+        ParseNext();
         ExprNode* left = expr;
-        ExprNode* right = parseExpr();
+        ExprNode* right = ParseExpr();
         expr = new ExprNode();
         expr->type = ExprNodeType::EXPR_BINOP;
         expr->val.emplace<3>(ExprNode::binop({ std::shared_ptr<ExprNode>(left), std::shared_ptr<ExprNode>(right), type }));
@@ -112,148 +110,58 @@ ExprNode* Parser::parseExpr(){
     return expr;
 }
 
-std::unique_ptr<StmtNode> Parser::parseNode()
+std::unique_ptr<StmtNode> Parser::ParseNode()
 {
 
     StmtNodeType t = TokenTypeToStmtType(m_next.type);
     
     if (t == StmtNodeType::STMT_EXPR)
     {
-        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
+        return std::unique_ptr<StmtNode>(new StmtNode(t, ParseExpr()));
     }
     if (t <= StmtNodeType::STMT_NUMDECL)
     {
-        parseNext();
-        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr()));
+        ParseNext();
+        return std::unique_ptr<StmtNode>(new StmtNode(t, ParseExpr()));
     }
     if (t == StmtNodeType::STMT_WHILE)
     {
-        parseNext();
-        return std::unique_ptr<StmtNode>(new StmtNode(t, parseExpr(), std::shared_ptr<StmtNode>(parseNode()) ));
+        ParseNext();
+        return std::unique_ptr<StmtNode>(new StmtNode(t, ParseExpr(), std::shared_ptr<StmtNode>(ParseNode()) ));
     }
     if (t <= StmtNodeType::STMT_CONDITIONAL)
     {
-        parseNext();
-        auto expr = parseExpr();
-        auto stmt = std::shared_ptr<StmtNode>(parseNode());
-        parseNext();
-        auto elsestmt = std::shared_ptr<StmtNode>(parseNode());
+        ParseNext();
+        auto expr = ParseExpr();
+        auto stmt = std::shared_ptr<StmtNode>(ParseNode());
+        ParseNext();
+        auto elsestmt = std::shared_ptr<StmtNode>(ParseNode());
         return std::unique_ptr<StmtNode>(new StmtNode(t, expr, stmt, elsestmt ));
     }
     if (t == StmtNodeType::STMT_ELSE)
     {
-        parseNext();
-        return std::unique_ptr<StmtNode>(new StmtNode(t, std::shared_ptr<StmtNode>(parseNode())));
+        ParseNext();
+        return std::unique_ptr<StmtNode>(new StmtNode(t, std::shared_ptr<StmtNode>(ParseNode())));
     }
     if (t == StmtNodeType::STMT_SCOPE)
     {
-        parseNext();
+        ParseNext();
         std::vector<std::shared_ptr<StmtNode>> stmts;
         while (m_next.type != TokenType::T_CLOSEBRACE)
         {
-            stmts.push_back(parseNode());
-            parseNext();
+            stmts.push_back(ParseNode());
+            ParseNext();
         }
-        //parseNext();
+        //ParseNext();
         return std::unique_ptr<StmtNode>(new StmtNode(t, stmts));
     }
 
     return nullptr;
-
-    //return std::make_unique<StmtNode>(new StmtNode(t, v));
-
-    /*StmtNode* b = new StmtNode();
-    StmtNode* eb = new StmtNode();
-    std::vector<StmtNode*> s;*/
-
-    //switch (m_next.type){
-    //    case TokenType::T_PRINTLN: {
-    //        t = StmtNodeType::STMT_PRINTLN;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        if(m_next.type == TokenType::T_SEMICOLON){
-    //            v = expr;
-    //        }
-    //        else Log::MissingToken(TokenType::T_SEMICOLON);
-    //        return std::make_unique<StmtNode>();
-    //        //return node;
-    //    }
-    //    case TokenType::T_PRINT: {
-    //        t = StmtNodeType::STMT_PRINT;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        if(m_next.type == TokenType::T_SEMICOLON){
-    //            v = expr;
-    //        }
-    //        else Log::MissingToken(TokenType::T_SEMICOLON);
-    //        //return node;
-    //    }
-    //    case TokenType::T_NUMDECL: {
-    //        t = StmtNodeType::STMT_NUMDECL;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        if(m_next.type == TokenType::T_SEMICOLON){
-    //            v = expr;
-    //        }
-    //        else Log::MissingToken(TokenType::T_SEMICOLON);
-    //        //return node;
-    //    }
-    //    case TokenType::T_STRINGDECL: {
-    //        t = StmtNodeType::STMT_STRINGDECL;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        if(m_next.type == TokenType::T_SEMICOLON){
-    //            v = expr;
-    //        }
-    //        else Log::MissingToken(TokenType::T_SEMICOLON);
-    //        //return node;
-    //    }
-    //    case TokenType::T_IF: {
-    //        t = StmtNodeType::STMT_CONDITIONAL;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        v = expr;
-    //        b = parseNode().get();
-    //        parseNext();
-    //        if(m_next.type == T_ELSE){
-    //            parseNext();
-    //            eb = parseNode().get();
-    //        }
-    //        //return node;
-    //    }
-    //    case TokenType::T_WHILE: {
-    //        t = StmtNodeType::STMT_WHILE;
-    //        parseNext();
-    //        ExprNode* expr = parseExpr();
-    //        v = expr;
-    //        b = parseNode().get();
-    //        parseNext();
-    //        //return node;
-    //    }
-    //    case TokenType::T_OPENBRACE: {
-    //        t = StmtNodeType::STMT_SCOPE;
-    //        parseNext();
-    //        while(m_next.type != T_CLOSEBRACE){
-    //            s.push_back(parseNode().get());
-    //            parseNext();
-    //        }
-    //        //return node;
-    //    }
-    //    default: {
-    //        ExprNode* expr = parseExpr();
-    //        t = StmtNodeType::STMT_EXPR;
-    //        v = expr;
-    //        //return node;
-    //    }
-    //}
-    //return node;
-
-    
 }
 
-StmtNodeType Parser::TokenTypeToStmtType(TokenType& t)
+StmtNodeType Parser::TokenTypeToStmtType(TokenType& _tokenType)
 {
-    switch (t)
+    switch (_tokenType)
     {
         case TokenType::T_PRINT:
             return StmtNodeType::STMT_PRINT;

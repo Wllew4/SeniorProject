@@ -1,32 +1,36 @@
-//#pragma warning(disable:4996)
-#include "program/File.h"
-#include "debug/Log.h"
+#pragma warning(disable:4996)
+
 #include "debug/Callback.h"
+#include "debug/Log.h"
+#include "program/File.h"
+
+File::File(PrimitiveBuffer& _program)
+    : m_exe(_program), m_file("") {}
 
 File::~File()
 {
     free(m_file);
 }
 
-void File::Load(char* file)
+void File::Load(char* _file)
 {
-    FILE* f = fopen(file, "rb");
+    FILE* file = fopen(_file, "rb");
 
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        int bufsize = ftell(f);
-        fseek(f, 0, SEEK_SET);
+    if (file) {
+        fseek(file, 0, SEEK_END);
+        int bufferSize = ftell(file);
+        fseek(file, 0, SEEK_SET);
 
-        m_file = new char[bufsize + 1];
-        m_file[bufsize] = '\0';
+        m_file = new char[bufferSize + 1];
+        m_file[bufferSize] = '\0';
 
-        int readsize = fread(m_file, sizeof(char), bufsize + 1, f);
-        if (bufsize != readsize) {
+        size_t readSize = fread(m_file, sizeof(char), bufferSize + 1, file);
+        if (bufferSize != readSize) {
             free(m_file);
             Debug::Log::Crash(111) << "Could not allocate memory for file " << m_file << '\n';
             exit(111);
         }
-        fclose(f);
+        fclose(file);
         Debug::Callback::LoadFile(m_file);
     }
     else {

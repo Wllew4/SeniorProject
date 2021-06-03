@@ -1,40 +1,41 @@
 #include "object/Primitive.h"
-#include "evaluation/Eval.h"
+
 #include "debug/Log.h"
+#include "evaluation/Eval.h"
 
 #include <iostream>
 
-Primitive::Primitive(const TYPE_PRIMITIVE type, double n, std::string name)
-	: m_type(type), m_name(name)
+Primitive::Primitive(const PrimitiveType _type, double _num, std::string _name)
+	: m_type(_type), m_name(_name)
 {
-	m_data.num = n;
+	m_data.num = _num;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE type, std::string s, std::string name)
-	: m_type(type), m_name(name)
+Primitive::Primitive(const PrimitiveType _type, std::string _string, std::string _name)
+	: m_type(_type), m_name(_name)
 {
-	m_data.string = s;
+	m_data.string = _string;
 }
 
-Primitive::Primitive(const TYPE_PRIMITIVE type, bool b, std::string name)
-	: m_type(type), m_name(name)
+Primitive::Primitive(const PrimitiveType _type, bool _bool, std::string _name)
+	: m_type(_type), m_name(_name)
 {
-	m_data.boolean = b;
+	m_data.boolean = _bool;
 }
 
-Primitive::Primitive(const Primitive& r)
-	: m_type(r.m_type), m_name(r.m_name)
+Primitive::Primitive(const Primitive& _result)
+	: m_type(_result.m_type), m_name(_result.m_name)
 {
-	switch(r.m_type)
+	switch(_result.m_type)
 	{
-		case TYPE_PRIMITIVE::TYPE_NUM:
-			m_data.num = r.m_data.num;
+		case PrimitiveType::Num:
+			m_data.num = _result.m_data.num;
 			break;
-		case TYPE_PRIMITIVE::TYPE_STRING:
-			m_data.string = r.m_data.string;
+		case PrimitiveType::String:
+			m_data.string = _result.m_data.string;
 			break;
-		case TYPE_PRIMITIVE::TYPE_BOOL:
-			m_data.boolean = r.m_data.boolean;
+		case PrimitiveType::Bool:
+			m_data.boolean = _result.m_data.boolean;
 			break;
 	}
 }
@@ -43,50 +44,57 @@ Primitive::~Primitive()
 {
 }
 
-double Primitive::asNum()
+double Primitive::AsNum()
 {
-	if(m_type == TYPE_PRIMITIVE::TYPE_NUM)
+	if(m_type == PrimitiveType::Num)
 		return m_data.num;
-	//else Log::CannotImplicitlyConvert(m_type, TYPE_PRIMITIVE::TYPE_NUM);
+	else
+	{
+		Debug::Log::UnhandledException(202)
+			<< "Could not implicity convert object of type "
+			<< m_type
+			<< " to Num";
+		exit(202);
+	}
 	return 0;
 }
 
-std::string Primitive::asString()
+std::string Primitive::AsString()
 {
-	return Eval::toString(this);
+	return Eval::ToString(this);
 }
 
-bool Primitive::asBool()
+bool Primitive::AsBool()
 {
-	return Eval::toBool(this);
+	return Eval::ToBool(this);
 }
 
-void Primitive::setValue(double val)
+void Primitive::SetValue(double val)
 {
 	m_data.num = val;
 }
 
-void Primitive::setValue(std::string val)
+void Primitive::SetValue(std::string val)
 {
 	m_data.string = val;
 }
 
-void Primitive::setValue(bool val)
+void Primitive::SetValue(bool val)
 {
 	m_data.boolean = val;
 }
 
-std::string& Primitive::getName()
+std::string& Primitive::GetName()
 {
 	return m_name;
 }
 
-const TYPE_PRIMITIVE Primitive::getType()
+const PrimitiveType Primitive::GetType()
 {
 	return m_type;
 }
 
-Data& Primitive::getData()
+Data& Primitive::GetData()
 {
 	return m_data;
 }

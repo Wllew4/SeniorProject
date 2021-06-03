@@ -1,8 +1,13 @@
+#include "debug/Timer.h"
 #include "program/Program.h"
 
-void Program::Execute(char* main)
+Program::Program()
+	: m_mainFile(m_objectBuffer) {}
+
+void Program::Execute(char* _main)
 {
-	m_mainFile.Load(main);
+	Debug::Timer timer = "Total Program Execution";
+	m_mainFile.Load(_main);
 	m_mainFile.Execute();
 }
 

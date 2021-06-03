@@ -2,26 +2,28 @@
 
 #include "object/Primitive.h"
 #include "debug/Debug.h"
+
 #include <iostream>
-#define Print (logInstance << logInstance.getPrefix())
 
 class Debug::Log
 {
-	private:
-		std::string prefix = "JANELLE:\t";
-		
-	public:
-		template<typename T>
-		inline Log& operator<<(T t)
-		{
-			std::cout << t << std::flush;
-			return *this;
-		}
-			
-		std::string& getPrefix();
-			
-		static Log& UnhandledException(int code);
-		static Log& Crash(int code);
-};
+public:
+	Log(const Log&) = delete;
+	static Log& GetInstance();
 
-extern Debug::Log logInstance;
+	template<typename T>
+	inline Log& operator<<(T _t)
+	{
+		std::cout << _t << std::flush;
+		return *this;
+	}
+
+	static Log& Print();
+	static Log& UnhandledException(int _errorCode);
+	static Log& Crash(int _errorCode);
+
+private:
+	Log() {}
+	std::string m_prefix = "JANELLE:\t";
+	std::string& GetPrefix();
+};

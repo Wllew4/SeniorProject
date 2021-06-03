@@ -1,6 +1,7 @@
 #pragma once
 
-#define DebugOptionListSize 4
+#define VERSION_STRING "0.1.0"
+#define DEBUG_OPTION_LIST_SIZE 4
 
 class Debug
 {
@@ -12,15 +13,14 @@ public:
 
 	static Debug& GetInstance();
 
-	static void Init(int argc, char** argv);
+	static void Init(int _argc, char** _argv);
 
 	static const char* GetVersionString();
-	static bool GetOption(int index);
+	static bool GetOption(int _index);
 
 private:
 	Debug() {}
-	const char* version_string = "0.1.0";
-	bool b_options[DebugOptionListSize] = { 0,0,0,0 };
+	bool b_options[DEBUG_OPTION_LIST_SIZE] = { 0,0,0,0 };
 
-	void InternalInit(int argc, char** argv);
+	void InternalInit(int _argc, char** _argv);
 };

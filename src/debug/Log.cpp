@@ -1,25 +1,29 @@
 #include "debug/Log.h"
+
 #include "ast/lexing/Lexer.h"
 
-const char* primitivetypes[] = {
-    "num",
-    "string",
-    "bool"
-};
-
-Debug::Log logInstance;
-
-std::string& Debug::Log::getPrefix()
+Debug::Log& Debug::Log::GetInstance()
 {
-    return prefix;
+    static Log instance;
+    return instance;
 }
 
-Debug::Log& Debug::Log::UnhandledException(int code)
+std::string& Debug::Log::GetPrefix()
 {
-	return Print << "Unhandled Exception " << code << " on line " << Lexer::getLine() << ": ";
+    return m_prefix;
 }
 
-Debug::Log& Debug::Log::Crash(int code)
+Debug::Log& Debug::Log::Print()
 {
-    return Print << "Crash " << code << " on line " << Lexer::getLine() << ": ";
+    return GetInstance() << GetInstance().GetPrefix();
+}
+
+Debug::Log& Debug::Log::UnhandledException(int _errorCode)
+{
+	return Print() << "Unhandled Exception " << _errorCode << " on line " << Lexer::GetLine() << ": ";
+}
+
+Debug::Log& Debug::Log::Crash(int _errorCode)
+{
+    return Print() << "Crash " << _errorCode << " on line " << Lexer::GetLine() << ": ";
 }
